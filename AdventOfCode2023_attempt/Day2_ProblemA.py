@@ -1,5 +1,5 @@
 #Assume: text input is "DayX_problemX_Input.txt"
-day_number = 1
+day_number = 2
 problem_set = "A"
 
 from functools import reduce
