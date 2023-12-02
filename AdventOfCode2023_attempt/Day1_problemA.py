@@ -4,13 +4,13 @@ day_number = 1
 from functools import reduce
 def main():
     input = read_file()
-    no_digits = map(lambda input_line: 
+    only_digits = map(lambda input_line: 
                             filter(lambda char: char >= "0" and char <= "9",
                                    input_line),
-                    input)
+                      input)
     
     sum = 0
-    for item in no_digits:
+    for item in only_digits:
         arr = list(item)
         if len(arr) != 0:
             sum += int(arr[0]) * 10 + int(arr[-1])
