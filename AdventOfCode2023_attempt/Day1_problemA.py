@@ -20,12 +20,13 @@ def main():
     
 
 def read_file():
-    relative_directory = "personal-projects/AdventOfCode2023_attempt"
+    relative_directory = "AdventOfCode2023_attempt"
     file_lines = []
     #looped instead of fully read with .readlines() to remove new line character at the back
     with open(f"{relative_directory}/Day{day_number}_Problem{problem_set}_Input.txt", "r") as file:
         for line in file:
             file_lines.append(line[:-1])
     return file_lines
+
 
 main()
