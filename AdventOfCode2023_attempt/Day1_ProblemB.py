@@ -1,6 +1,5 @@
-#Assume: text input is "DayX_problemX_Input.txt"
+#text input is "DayX_Input.txt"
 day_number = 1
-problem_set = "B"
 
 from functools import reduce
 def main():
@@ -20,13 +19,8 @@ def main():
 
 def read_file():
     relative_directory = "AdventOfCode2023_attempt"
-    file_lines = []
-    #looped instead of fully read with .readlines() to remove new line character at the back
-    full_directory = f"{relative_directory}/Day{day_number}_Problem{problem_set}_Input.txt"
+    full_directory = f"{relative_directory}/Day{day_number}_Input.txt"
     with open(full_directory, "r") as file:
-        for line in file:
-            file_lines.append(line[:-1])
-    return file_lines
-
+        return file.readlines()
 
 main()

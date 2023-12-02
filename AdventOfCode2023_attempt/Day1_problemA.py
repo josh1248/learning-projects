@@ -1,5 +1,5 @@
-#Assume: text input is "DayX_problemX_Input.txt"
-day_number, problem_set = 1, "A"
+#text input is "DayX_Input.txt"
+day_number = 1
 
 from functools import reduce
 def main():
@@ -19,7 +19,7 @@ def main():
 
 def read_file():
     relative_directory = "AdventOfCode2023_attempt"
-    full_directory = f"{relative_directory}/Day{day_number}_Problem{problem_set}_Input.txt"
+    full_directory = f"{relative_directory}/Day{day_number}_Input.txt"
     with open(full_directory, "r") as file:
         return file.readlines()
 
