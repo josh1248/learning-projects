@@ -1,36 +1,34 @@
-#Assume: text input is "DayX_problemX_Input.txt"
+#text input is "DayX_Input.txt"
 day_number = 2
-problem_set = "A"
+import re
 
-#parameters set for day
-max_red_cubes, max_green_cubes, max_blue_cubes = 12, 13, 14
-
-from functools import reduce
+color_requirements = {"red" : 12, "green": 13, "blue": 14}
+colors = color_requirements.keys()
 def main():
     input = read_file()
-    no_digits = map(lambda input_line: 
-                            filter(lambda char: char >= "0" and char <= "9",
-                                   input_line),
-                    input)
-    
-    sum = 0
-    for item in no_digits:
-        arr = list(item)
-        if len(arr) != 0:
-            sum += int(arr[0]) * 10 + int(arr[-1])
-    print(sum)
-    
 
-import csv
+    ID_sums = 0
+    for line in input:
+        possible_draw = True
+        for color in colors:
+            regex_matches = re.findall(fr'([0-9]+) {color}', line)
+            regex_matches_int = map(int, regex_matches)
+            if max(regex_matches_int) > color_requirements[color]:
+                #impossible draw
+                possible_draw = False
+                break
+        
+        if possible_draw:
+            ID = re.findall(r'Game ([0-9]+):', line)
+            ID_sums += int(ID[0])
+    
+    print(ID_sums)
+
+
 def read_file():
     relative_directory = "AdventOfCode2023_attempt"
-    file_lines = []
-    #looped instead of fully read with .readlines() to remove new line character at the back
-    full_directory = f"{relative_directory}/Day{day_number}_Problem{problem_set}_Input.txt"
+    full_directory = f"{relative_directory}/Day{day_number}_Input.txt"
     with open(full_directory, "r") as file:
-        for line in file:
-            file_lines.append(line[:-1])
-    return file_lines
-
+        return file.readlines()
 
 main()
