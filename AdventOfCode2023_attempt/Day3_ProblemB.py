@@ -1,7 +1,6 @@
 #text input is "DayX_Input.txt"
 day_number = 3
 import re
-from functools import reduce
 
 def main():
     input = read_file()
@@ -53,7 +52,7 @@ def get_gear_ratio(item, row_index, input_rows, numbers):
 
 def read_file():
     relative_directory = "AdventOfCode2023_attempt"
-    full_directory = f"{relative_directory}/test.txt"
+    full_directory = f"{relative_directory}/Day{day_number}_Input.txt"
     with open(full_directory, "r") as file:
         return file.readlines()
 

@@ -1,7 +1,6 @@
 #text input is "DayX_Input.txt"
 day_number = 3
 import re
-from functools import reduce
 
 def main():
     input = read_file()
