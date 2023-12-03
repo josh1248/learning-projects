@@ -34,14 +34,12 @@ def is_allowed_number(item, row_index, input, input_rows, input_cols):
         surrounding_chars += input[row_index - 1][max(0, start_col -1):min(input_cols, end_col_plus_one + 1)]
     if row_index < input_rows - 1:
         surrounding_chars += input[row_index + 1][max(0, start_col -1):min(input_cols, end_col_plus_one + 1)]
-    print(surrounding_chars)
-
     #Python magic: empty lists are False, non-empty lists are True
     return bool(re.search(r'[^A-Za-z0-9.]', surrounding_chars))
 
 def read_file():
     relative_directory = "AdventOfCode2023_attempt"
-    full_directory = f"{relative_directory}/test.txt"
+    full_directory = f"{relative_directory}/Day{day_number}_Input.txt"
     with open(full_directory, "r") as file:
         return file.readlines()
 
