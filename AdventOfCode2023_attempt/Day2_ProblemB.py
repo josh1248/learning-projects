@@ -7,22 +7,17 @@ colors = color_requirements.keys()
 def main():
     input = read_file()
 
-    ID_sums = 0
+    power_sums = 0
     for line in input:
-        possible_draw = True
+        power = 1
         for color in colors:
             color_draws = re.findall(fr'([0-9]+) {color}', line)
             color_draws_int = map(int, color_draws)
-            if max(color_draws_int) > color_requirements[color]:
-                #impossible draw
-                possible_draw = False
-                break
-        
-        if possible_draw:
-            ID = re.findall(r'Game ([0-9]+):', line)
-            ID_sums += int(ID[0])
+            power *= max(color_draws_int)
+
+        power_sums += power
     
-    print(ID_sums)
+    print(power_sums)
 
 
 def read_file():
