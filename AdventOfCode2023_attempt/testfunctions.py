@@ -1,3 +1,2 @@
-import re
-str = "4 5 1 5 6 [3] | 3 6 2 6"
-print(str[2:5])
+for input_pos in range(12 - 1, -1, -1):
+    print(input_pos)

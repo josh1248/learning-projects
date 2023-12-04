@@ -1,15 +1,21 @@
 #text input is "DayX_Input.txt"
 day_number = 4
-import re
 
 def main():
     input = read_file()
     total_points = 0
 
     for row in input:
-        start_pos, mid_pos = row.find(":"), row.find("|")
-        winning_nums, nums_you_have = line[start_pos:mid_pos + 1].split(" "), line[mid_pos + 1:].split(" ")
-        print(winning_nums)
+        single_spaces_only = row.replace("  ", " ")
+        start_pos, mid_pos = single_spaces_only.find(":"), single_spaces_only.find("|")
+        winning_nums = single_spaces_only[(start_pos + 2):(mid_pos - 1)].split(" ")
+        nums_you_have = single_spaces_only[(mid_pos + 2):-1].split(" ")
+        
+        matches = len(set(winning_nums).intersection(nums_you_have))
+        if matches: #not zero evals to true
+            total_points += 2 ** (matches - 1)
+
+    print(total_points)
 
 def read_file():
     relative_directory = "AdventOfCode2023_attempt"
