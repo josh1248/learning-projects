@@ -6,10 +6,9 @@ def main():
     total_points = 0
 
     for row in input:
-        single_spaces_only = row.replace("  ", " ")
-        start_pos, mid_pos = single_spaces_only.find(":"), single_spaces_only.find("|")
-        winning_nums = single_spaces_only[(start_pos + 2):(mid_pos - 1)].split(" ")
-        nums_you_have = single_spaces_only[(mid_pos + 2):-1].split(" ")
+        start_pos, mid_pos = row.find(":"), row.find("|")
+        winning_nums = row[start_pos + 1:mid_pos].split()
+        nums_you_have = row[mid_pos + 1:].split()
         
         matches = len(set(winning_nums).intersection(nums_you_have))
         if matches: #not zero evals to true

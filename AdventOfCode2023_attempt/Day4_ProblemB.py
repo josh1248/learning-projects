@@ -12,10 +12,10 @@ def main():
         if val is not None:
             return val
         
-        single_spaces_only = input[index].replace("  ", " ")
-        start_pos, mid_pos = single_spaces_only.find(":"), single_spaces_only.find("|")
-        winning_nums = single_spaces_only[(start_pos + 2):(mid_pos - 1)].split(" ")
-        nums_you_have = single_spaces_only[(mid_pos + 2):-1].split(" ")
+        row = input[index]
+        start_pos, mid_pos = row.find(":"), row.find("|")
+        winning_nums = row[start_pos + 1:mid_pos].split()
+        nums_you_have = row[mid_pos + 1:].split()
         
         matches = len(set(winning_nums).intersection(nums_you_have))
         total_scratch_cards = 1
