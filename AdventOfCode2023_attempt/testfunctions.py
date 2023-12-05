@@ -1,2 +1,2 @@
-for input_pos in range(12 - 1, -1, -1):
-    print(input_pos)
+from functools import reduce
+print(reduce(lambda running_sum, x: running_sum + x, range(0, 11), 0))
