@@ -1,0 +1,24 @@
+Day 1: 
+Used: basic string processing (get 1st and last digits of string, or replace digit spellings with actual digit)
+Time taken: ~1h on problem A, ~2h on problem B
+Difficulty: 1 / 10 for problem A, 3 / 10 for problem B
+
+Day 2:
+Used: regex (process string from "3 blue, 1 red, 2 green" to ["3","1","2"]). had to learn regex, but was very easy to apply
+time taken: ~1h on problem A, ~10 mins on problem B
+Difficulty: 1 / 10 for problem A, 1 / 10 for problem B
+
+Day 3:
+Used: regex + Kernel processing / rudimentary BFS (search surroundings of special characters, then get entire string if it touches special character)
+time taken: ~2h on problem A, ~3h on problem B
+Difficulty: 4 / 10 for problem A, 7 / 10 for problem B
+
+Day 4:
+Used: basic string processing, recursion + memoization
+time taken: ~1h on problem A, ~2h on problem B
+Difficulty: 1 / 10 for problem A, 4 / 10 for problem B
+
+Day 5:
+Used: my sanity, composite mappings, efficient mapping algorithm from one interval of integers to another.
+time taken: ~1h on problem A, ~5h on problem B
+Difficulty: 3 / 10 for problem A, 8 / 10 for problem B
