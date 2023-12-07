@@ -27,3 +27,8 @@ Day 6:
 Used: very basic looping and string processing. nothing much was learnt.
 time taken: ~5 mins on problem A, ~3 mins on problem B
 Difficulty: 1 / 10 for problem A, 1 / 10 for problem B
+
+Day 7:
+Used: basic logic to classify hand combos in a variant of poker. list comprehension was helpful too.
+time taken: ~40 mins on problem A, ~20 mins on problem B
+Difficulty: 3 / 10 for problem A, 3 / 10 for problem B
