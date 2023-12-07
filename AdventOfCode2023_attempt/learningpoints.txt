@@ -22,3 +22,8 @@ Day 5:
 Used: my sanity, composite mappings, efficient mapping algorithm from one interval of integers to another.
 time taken: ~1h on problem A, ~5h on problem B
 Difficulty: 3 / 10 for problem A, 8 / 10 for problem B
+
+Day 6:
+Used: very basic looping and string processing. nothing much was learnt.
+time taken: ~5 mins on problem A, ~3 mins on problem B
+Difficulty: 1 / 10 for problem A, 1 / 10 for problem B
