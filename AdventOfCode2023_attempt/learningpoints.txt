@@ -45,5 +45,6 @@ Difficulty: 1 / 10 for problem A, 1 / 10 for problem B
 
 Day 10:
 Used: learned the point in polygon method and winding path algorithm to determine if a point is within the polygon
+Used: alternative methods learnt were the shoelace method and flood filling an extended maze
 time taken: ~2h on problem A, ~3h on problem B
 Difficulty: 5 / 10 for problem A, 8 / 10 for problem B
