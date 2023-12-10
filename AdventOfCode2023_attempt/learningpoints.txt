@@ -42,3 +42,8 @@ Day 9:
 Used: simple application of recursion to extrapolate an AP-like sequence
 time taken: ~8 mins on problem A, ~3 mins of problem B
 Difficulty: 1 / 10 for problem A, 1 / 10 for problem B
+
+Day 10:
+Used: learned the point in polygon method and winding path algorithm to determine if a point is within the polygon
+time taken: ~2h on problem A, ~3h on problem B
+Difficulty: 5 / 10 for problem A, 8 / 10 for problem B
