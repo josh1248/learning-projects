@@ -13,9 +13,10 @@ def main():
     pipe_to_direction = {"|": [N, S], "-": [E, W], "L": [N, E], "J": [N, W],
                          "7": [S, W], "F": [E, S], ".": []} #in order of N,E,S,W for later checks
      
-    def symbol_at(m, coords): return m[coords[0]][coords[1]]
+    def read(m, coords): return m[coords[0]][coords[1]]
+    def write(m, coords, sym): m[coords[0]][coords[1]] = sym
     def get_next_direction(coords, incoming_direction):
-        for d in pipe_to_direction[symbol_at(maze, coords)]:
+        for d in pipe_to_direction[read(maze, coords)]:
             if d != incoming_direction:
                 return d
     
@@ -37,7 +38,7 @@ def main():
     traversed_main_loop = False
     for direction in [N, E, S, W]:
         try:
-            next_symbol = symbol_at(maze, update_coords(start_coords, direction))
+            next_symbol = read(maze, update_coords(start_coords, direction))
             if flip_direction(direction) in pipe_to_direction[next_symbol]:
                 valid_directions.append(direction)
                 if not traversed_main_loop:
@@ -48,7 +49,7 @@ def main():
 
     for key, value in pipe_to_direction.items():
         if value == valid_directions:
-            maze[start_coords[0]][start_coords[1]] = key
+            write(maze, start_coords, key)
 
     #"E" denotes non-loop tiles in the original maze, "X" denotes non-loop, non-original tiles
     new_maze = [[0] * 2 * width for _ in range(2 * height)]
@@ -70,7 +71,7 @@ def main():
         boundary_flag = False
         while stack:
             current = stack.pop()
-            if symbol_at(new_maze, current) == "B":
+            if read(new_maze, current) == "B":
                 continue
             elif current[0] in [0, 2 * height - 1] or current[1] in [0, 2 * width - 1]:
                 boundary_flag = True
@@ -85,14 +86,14 @@ def main():
         
         if boundary_flag:
             for coords in contiguous_block:
-                new_maze[coords[0]][coords[1]] = "O"
+                write(new_maze, coords, "O")
             return 0
         else:
             E_count = 0
             for coords in contiguous_block:
-                if new_maze[coords[0]][coords[1]] == "E":
+                if read(new_maze, coords) == "E":
                     E_count += 1
-                new_maze[coords[0]][coords[1]] = "I"
+                write(new_maze, coords, "I")
             return E_count
 
     total = 0
