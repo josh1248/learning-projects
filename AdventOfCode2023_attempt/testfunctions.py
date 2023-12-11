@@ -1,11 +1,13 @@
-def make_inf(string):
-    while True:
-        for char in string:
-            yield char
+# Sample array
+my_array = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-# Example usage
-inf_gen = make_inf("abcx")
+# Modify a subslice
+start_index = 2
+end_index = 5
+new_values = [10, 11, 12]
 
-# Loop to print the generated string
-for _ in range(60):  # Print the first 20 characters for demonstration
-    print(next(inf_gen), end='')
+# Assign the new values to the subslice
+my_array[start_index:end_index] = my_array[0:3] + 1
+
+# Print the modified array
+print(my_array)
