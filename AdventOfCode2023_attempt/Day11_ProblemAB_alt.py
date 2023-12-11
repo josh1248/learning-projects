@@ -17,13 +17,13 @@ def main():
             empty_cols.append(c_index)
 
     empty_rows_smaller_than, empty_cols_smaller_than = np.array([0] * len(image)), np.array([0] * len(image[0]))
-    for i in range(len(empty_rows)):
-        if empty_rows[i] < (len(image) - 1):
-            empty_rows_smaller_than[empty_rows[i] + 1:] += 1 #only works in numpy.
+    for num in empty_rows:
+        if num < (len(image) - 1):
+            empty_rows_smaller_than[num + 1:] += 1 #only works in numpy.
 
-    for i in range(len(empty_cols)):
-        if empty_cols[i] < (len(image[0]) - 1):
-            empty_cols_smaller_than[empty_cols[i] + 1:] += 1
+    for num in empty_cols:
+        if num < (len(image[0]) - 1):
+            empty_cols_smaller_than[num + 1:] += 1
     
     def empty_lines_between(b1, b2, arr):
         return abs(arr[b2] - arr[b1])
