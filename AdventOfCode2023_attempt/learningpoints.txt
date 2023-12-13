@@ -48,3 +48,18 @@ Used: learned the point in polygon method and winding path algorithm to determin
 Used: alternative methods learnt were the shoelace method and flood filling an extended maze
 time taken: ~2h on problem A, ~3h on problem B
 Difficulty: 5 / 10 for problem A, 8 / 10 for problem B
+
+Day 11:
+Used: understanding of Manhattan distances
+time taken: ~1h on problem A, ~1h on problem B
+Difficulty: 3 / 10 for problem A, 3 / 10 for problem B
+
+Day 12:
+Used: Dynamic Programming + Memoization
+time taken: ~2h on problem A, ~20 mins on problem B
+Difficulty: 3 / 10 for problem A, 4 / 10 for problem B
+
+Day 13:
+Used: Some numpy 2d array functionality.
+time taken: ~1h30 on problem A, ~1h on problem B
+Difficulty: 4 / 10 for problem A, 4 / 10 for problem B 
