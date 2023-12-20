@@ -63,3 +63,9 @@ Day 13:
 Used: Some numpy 2d array functionality.
 time taken: ~1h30 on problem A, ~1h on problem B
 Difficulty: 4 / 10 for problem A, 4 / 10 for problem B 
+
+Day 14:
+Used: numpy magic to move some rocks around, but could have used logic optimisations by converting absolute to relative cardinal directions. for example, tilting west while facing south would simply be tilting clockwise.
+Used: cycle tracking to determine future state by storing entire mazes, but could have optimised memory usage by using cycle tracking of integers but with repeats possible
+time taken: a long time (~5h?)
+Difficulty: 4 / 10 for problem A, 7 / 10 for problem B
