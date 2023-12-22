@@ -1,1 +1,0 @@
-print("abc".split("b"))
