@@ -6,6 +6,6 @@ This project is currently unfinished while I am working on the mastering the uni
 
 # Features
 
-# Online website:
+# Online website
 
-# How to Run Locally:
+# How to Run Locally
