@@ -1,7 +1,11 @@
 # cvwo-assignment-24
 
-Progress logs: \
-27 Dec: formulated ideas and starting layout for the web forum \
-28 Dec: refresher on JavaScript and learning HTML, CSS, and React \
-29 Dec: set up the first React + vanilla JS project, implementing Tic Tac Toe \
-30 Dec: refactored into a TS project, plus using dynamic list generation \
+Hello! This is my web forum implementation with React and TypeScript as the frontend, with Ruby on Rails with SQLite3 as the backend. /
+
+This project is currently unfinished while I am working on the mastering the unit components of this project. /
+
+# Features
+
+# Online website:
+
+# How to Run Locally:
