@@ -1,23 +1,23 @@
 My notes for Go.
 
-Based on a local copy of "a tour of Go" at https://go.dev/tour/list.
+Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com/watch?v=un6ZyFkqFKo.
 
 # What Go is
 
 A compiled language that aims to get both efficiency and readability.
-Statically typed. offers a dynamic type inference as well.
+Statically typed. offers type inference as well.
 described as C-like and Python-like in syntax.
 It has very quick compilation time compared to other compiled languages.
 
 Advanced: Efficient multi-threading as well.
 
-Runtime: An intermediate, below interpreted languages but above compiled languages.
+Runtime: An intermediate, below interpreted languages but above compiled languages as it uses Go runtime to ensure memory safety, garbage collection etc.
 
 # Comparison to C and Python
 
 Automatically runs the function main, like C.
 
-strongly typed, unlike C. Expliciy conversion is required.
+strongly typed, unlike C. Explicit conversion is required.
 
 "fmt" module - similar in function to stdio in C.
 
@@ -57,9 +57,9 @@ import (
 )
 ```
 
-# Functions, variables, types
+# Functions
 
-Go is a statically-typed language:
+Go is a statically-typed language, with TypeScript-like syntax without colons.
 
 ```
 func add(x int, y int) int {
@@ -75,6 +75,16 @@ func add(x, y int) int {
 }
 ```
 
+Functions can return multiple items:
+
+```
+func swap(x, y string) (string, string) {
+	return y, x
+}
+```
+
+Functions can have named output variables, which can then be used in the function.
+
 Go uses types: bool, string, int, uint, byte (alias for uint8), rune (alias for int32), float, complex.
 
 Numerical types can have their sizes specified as well: int8, int16, etc.
@@ -87,4 +97,14 @@ Basics:
 
 %T: prints the type of the variable.
 
-Variables can be
+Variables are declared with var, followed by their type.
+
+With an explicit value in declaration, the type can be inferred.
+
+Without an explicit value, the types must be stated. A default "zero value" depending on type is offered until later modified, e.g. 0 for int and "" for string.
+
+```
+var i, j int
+var a, b = 12, "xyz"
+fmt.Printf("%T %T %T %T", i, j, a, b)
+```
