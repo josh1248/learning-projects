@@ -20,4 +20,5 @@ Here is my progress in understanding the individual parts that I am working with
 
 31 Dec: Guided implementation of blog with Rails + SQLite3, following a Rails tutorial at https://guides.rubyonrails.org/getting_started.html
 
-10 Jan: Still unable to get the Delete part of my Rails 7 CRUD blog to work. I am unable to debug it myself as I do not innately understand the workings of routes, APIs, etc., which makes me uncomfortable. I do not like using things I dont understand blindly. Hence, I have decided to switch to Golang instead. I am currently learning the basics of Golang in my repository.
+10 Jan: Still unable to get the Delete part of my Rails 7 CRUD blog to work. I am unable to debug it myself as I do not innately understand the workings of routes, APIs, etc., which makes me uncomfortable. I do not like using things I dont understand blindly.
+Additionally, I will have an easier time learning Golang as I have experience in Python and C. Hence, I have decided to switch to Golang instead. I am currently learning the basics of Golang in my repository.
