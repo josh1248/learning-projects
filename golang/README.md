@@ -13,7 +13,7 @@ Advanced: Efficient multi-threading as well.
 
 Runtime: An intermediate, below interpreted languages but above compiled languages.
 
-[#basic-syntax]
+[t](#basic-syntax)
 
 # Basic Syntax
 
