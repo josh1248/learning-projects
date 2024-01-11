@@ -38,7 +38,6 @@ Unused operators will be flagged as a compile time error. Silence this by using 
 Functions are "first class citizens". Higher order functions are supported.
 
 Function closures are used, referencing variables in the block or function it is declared in.
-ß
 
 ```
 package main
@@ -130,6 +129,16 @@ func add(x, y int) (z int) {
 }
 ```
 
+Anonymous functions (called 'function literals') are supported, but return statements must be stated even for one-liners. I think JS lambda functions are still the most elegant.
+
+```
+fmt.Println(func(x int) int {return 3 * x}(10))
+quad := func(y int) int {
+	return 4 * y
+}
+fmt.Println(quad(20))
+```
+
 # Types
 
 Go uses types: bool, string, int, uint, byte (alias for uint8), rune (alias for int32), float, complex.
@@ -185,22 +194,36 @@ var (
 )
 ```
 
-Explicit type conversion is required for Go.
-
-int to string conversion is ASCII-based. For example, string(65) gives "A".
-
-atoi / itoa C equivalents in Go are:
+Just like JS, you can use const to declare fixed names. However, all const variables must be computable before runtime.
 
 ```
-func main() {
-    var i, j = 123, "abc"
-    fmt.PrintIn("%v", string(i) + j) //string concatenation.
-}
+const i = 20
 ```
+
+Explicit type conversion is required for Go (hence, strongly typed).
+
+int to string conversion is ASCII-based. For example, string(65) gives "A". For atoi / itoa behaviour like in C, see the strconv package for Go.
+
+# Loops and control flow: for, ranges
+
+The only looping construct in Go is the `for` loop, with an initializer, expression, and increment. It works exactly as it does in C.
+
+All fields are optional, which allows Go to represent many kinds of loops differently.
+
+- For a "while" loop: leave only the expression, no semicolons required.
+- For an infinite loop: leave all
+
+control flow statements like `break` and `continue` are supported in Go. `break` even supports
 
 # Pointers and structs
 
-type aliases are provided in Go, like in C. "typedef" in C is simply "type" in Go.
+structs in Go are analagous to structs in C, and can contain multiple fields which are accessed with the "." operator.
+
+similar to typedef in C, use "type" to provide an alias for structs (or even primitive data types). In Go, specify the alias before the struct, unlike in C where the struct is specified first.
+
+```
+
+```
 
 # Slices
 
