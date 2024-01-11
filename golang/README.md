@@ -204,16 +204,64 @@ Explicit type conversion is required for Go (hence, strongly typed).
 
 int to string conversion is ASCII-based. For example, string(65) gives "A". For atoi / itoa behaviour like in C, see the strconv package for Go.
 
-# Loops and control flow: for, ranges
+# Loops and control flow
 
-The only looping construct in Go is the `for` loop, with an initializer, expression, and increment. It works exactly as it does in C.
+The only looping construct in Go is the `for` loop, with an initializer, expression, and increment. It combines all looping functionalities in both C and Python.
 
 All fields are optional, which allows Go to represent many kinds of loops differently.
 
-- For a "while" loop: leave only the expression, no semicolons required.
-- For an infinite loop: leave all
+- Typical C `for` loop: fill in all fields.
+- `while` loop: leave only the expression, no semicolons required.
+- For an infinite loop: leave all fields blank.
+- C `do-while` loop: no equivalents, can be emulated using the construct `for next := true; next; next=<condition>`
+- Python `for` loop over sequence data types are offered as well.
 
-control flow statements like `break` and `continue` are supported in Go. `break` even supports
+```
+//1: Typical 'for' loop
+sum := 0
+for i := 0; i < 10; i++ {
+	sum += i
+}
+
+//2: 'while' loop
+sum := 1
+for sum < 1000 {
+	sum += sum
+}
+fmt.Println(sum)
+
+//3: infinite loop
+for {
+	//do something
+}
+
+//4: do-while loop
+i := 0
+for next := true; true; next = i < 10 {
+	i += i
+}
+
+//5: Range over a sequence, like a slice or map. returns the index of the element and the element itself, akin to enumerate() in Python. If not used, use the _ variable name to silence compile time errors.
+
+var pow = []int{1, 2, 4, 8, 16, 32, 64, 128}
+
+func main() {
+	for i, v := range pow {
+		fmt.Printf("2\*\*%d = %d\n", i, v)
+	}
+
+	for _, value := range pow {
+		fmt.Printf("%d\n", value)
+	}
+
+	//uses the index only.
+	for i := range pow {
+		pow[i] = 1 << uint(i) // == 2**i
+	}
+}
+```
+
+control flow statements like `break` and `continue` are supported in Go. `break` even supports goto-like constructs.
 
 # Pointers and structs
 
@@ -234,13 +282,20 @@ similar to typedef in C, use "type" to provide an alias for structs (or even pri
 Go offers the defer statement, which saves statements into a stack that is executed only when the function ends. Example:
 
 ```
+
 func main() {
-	fmt.Println("counting")
+fmt.Println("counting")
 
-	for i := 0; i < 10; i++ {
-		defer fmt.Println(i)
-	}
+    for i := 0; i < 10; i++ {
+    	defer fmt.Println(i)
+    }
 
-	fmt.Println("done")
+    fmt.Println("done")
+
 }
+
+```
+
+```
+
 ```
