@@ -54,7 +54,7 @@ Functions are "first class citizens". Higher order functions are supported.
 
 Function closures are used, referencing variables in the block or function it is declared in.
 
-```
+```Go
 package main
 
 import "fmt"
@@ -82,7 +82,7 @@ func main() {
 
 Hello World Program:
 
-```
+```Go
 package main
 
 import "fmt"
@@ -91,15 +91,11 @@ func main() {
 	fmt.Println("Hello, 世界") //this is print l n, for print line, not print IN.
     //Alternative: fmt.Printf("Hello, world!")
 }
-
-/* Alternative
-
-*/
 ```
 
-Import multiple packages with the following syntax:
+Import multiple packages with the following syntax. In fact, you can use this syntax for repeated uses of *any* keyword, like var.
 
-```
+```Go
 import (
 "fmt"
 "math"
@@ -110,7 +106,7 @@ import (
 
 Go is a statically-typed language, with TypeScript-like syntax without colons.
 
-```
+```Go
 func add(x int, y int) int {
 	return x + y
 }
@@ -118,7 +114,7 @@ func add(x int, y int) int {
 
 Syntactic sugar is offered for shared types:
 
-```
+```Go
 func add(x, y int) int {
 	return x + y
 }
@@ -126,7 +122,7 @@ func add(x, y int) int {
 
 Functions can return multiple items:
 
-```
+```Go
 func swap(x, y string) (string, string) {
 	return y, x
 }
@@ -136,7 +132,7 @@ Functions can have named output variables, which can then be used in the functio
 
 Not recommended: a "naked" return statement will return the output variables by default, but is discouraged as it is less readable.
 
-```
+```Go
 func add(x, y int) (z int) {
     z = x + y
     //will return z automatically.
@@ -146,13 +142,57 @@ func add(x, y int) (z int) {
 
 Anonymous functions (called 'function literals') are supported, but return statements must be stated even for one-liners. I think JS lambda functions are still the most elegant.
 
-```
+```Go
 fmt.Println(func(x int) int {return 3 * x}(10))
 quad := func(y int) int {
 	return 4 * y
 }
 fmt.Println(quad(20))
 ```
+
+Higher order functions are supported in Go.
+```Go
+func apply_twice(fn func(float64) float64) func(float64) float64 {
+	return func(num float64) float64 {
+		return fn(fn(num))
+	}
+}
+
+func double(x float64) float64 {return 2 * x}
+
+func main() {
+	fmt.Println(apply_twice(double)(7)) //returns 28
+}
+```
+
+
+Functions reference variables starting from the environment they are created in. This is called a closure like in JS: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures. Recall the Environment model in CS1101S. 
+
+```Go
+package main
+
+import "fmt"
+
+func adder() func(int) int {
+	sum := 0
+	return func(x int) int {
+		sum += x
+		return sum
+	}
+}
+
+func main() {
+	pos, neg := adder(), adder()
+	for i := 0; i < 10; i++ {
+		fmt.Println(
+			pos(i),
+			neg(-2*i),
+		)
+	}
+}
+```
+
+Notice that in the code above, any time the `adder` function is called, a new block instance is created, which the returned function can access. Hence, the variable `sum` in the 2 adders exist in their separate instances.
 
 # Types
 
@@ -180,7 +220,7 @@ With an explicit value in declaration, the type can be inferred, and is hence op
 
 Without an explicit value, the types must be stated. A default "zero value" depending on type is offered until later modified, e.g. 0 for int and "" for string.
 
-```
+```Go
 var i, j int
 var a, b = 12, "xyz"
 var balance float64 = 5 //explicit type stated here as balance could be fractional in the future.
@@ -188,7 +228,7 @@ var balance float64 = 5 //explicit type stated here as balance could be fraction
 
 := is syntactic sugar for var declarations with explicit values and given types, BUT := can only work within functions.
 
-```
+```Go
 func main() {
 	var i, j int = 1, 2
 	k := 3 //equivalently, var k = 3
@@ -200,7 +240,7 @@ func main() {
 
 You may use brackets, similar to multiple import statements, as an alternative to sequence statements:
 
-```
+```Go
 var i int, j string, k bool = 2, "hi", true
 var (
     a int = 4
@@ -211,7 +251,7 @@ var (
 
 Just like JS, you can use const to declare fixed names. However, all const variables must be computable before runtime.
 
-```
+```Go
 const i = 20
 ```
 
@@ -221,7 +261,17 @@ int to string conversion is ASCII-based. For example, string(65) gives "A". For 
 
 # Loops and control flow
 
-The only looping construct in Go is the `for` loop, with an initializer, expression, and increment. It combines all looping functionalities in both C and Python.
+`if-else` functionality is similarly supported in C, but additionally offers an initializer statement as syntactic sugar. Similar to the initializer in `for` loops, it can help to reduce namespace pollution outside of the loop it is used in.
+```
+func pow(x, n, lim float64) float64 {
+	if v := math.Pow(x, n); v < lim {
+		return v
+	}
+	return lim
+}
+```
+
+The **only** looping construct in Go is the `for` loop, with an initializer, expression, and increment. It combines all looping functionalities in both C and Python.
 
 All fields are optional, which allows Go to represent many kinds of loops differently.
 
@@ -231,7 +281,7 @@ All fields are optional, which allows Go to represent many kinds of loops differ
 - C `do-while` loop: no equivalents, can be emulated using the construct `for next := true; next; next=<condition>`
 - Python `for` loop over sequence data types are offered as well.
 
-```
+```Go
 //1: Typical 'for' loop
 sum := 0
 for i := 0; i < 10; i++ {
@@ -282,7 +332,7 @@ control flow statements like `break` and `continue` are supported in Go. `break`
 
 structs in Go are analagous to structs in C, and can contain multiple fields which are accessed with the "." operator.
 
-similar to typedef in C, use "type" to provide an alias for structs (or even primitive data types). In Go, specify the alias before the struct, unlike in C where the struct is specified first.
+similar to typedef in C, use "type" to provide an alias for structs (or even primitive data types). In Go, the alias comes before the struct, unlike in C where the struct is specified first.
 
 ```
 
@@ -296,8 +346,7 @@ similar to typedef in C, use "type" to provide an alias for structs (or even pri
 
 Go offers the defer statement, which saves statements into a stack that is executed only when the function ends. Example:
 
-```
-
+```Go
 func main() {
 fmt.Println("counting")
 
@@ -306,11 +355,8 @@ fmt.Println("counting")
     }
 
     fmt.Println("done")
-
 }
-
 ```
+it is used as an alternative for error handling when used with the `panic` and `recover` constructs.
 
-```
-
-```
+Go offers generators 
