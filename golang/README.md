@@ -12,7 +12,8 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 - [Loops and control flow](#loops-and-control-flow)
 - [structs](#structs)
 - [Pointers](#pointers)
-- [Slices](#slices)
+- [make](#make)
+- [Arrays and Slices](#arrays-and-slices)
 - [Higher Order Functions and Closures](#higher-order-functions-and-closures)
 - [Advanced: Defer / Panic / Recover](#advanced-defer--panic--recover)
 - [Advanced: Concurrency, Goroutines, chan](#advanced-concurrency-goroutines-chan)
@@ -392,7 +393,25 @@ func main() {
 }
 ```
 
-# Slices
+# make
+The built-in `make` function is Go's method of creating dynamically generated *anything*, as will be shortly seen.
+```Go
+func eg(x int) []int {
+	return make([]int, x)
+}
+
+func printSlice(s string, x []int) {
+	fmt.Printf("%s len=%d cap=%d %v\n",
+		s, len(x), cap(x), x)
+}
+
+func main() {
+	a := eg(12)
+	printSlice("a", a)
+}
+```
+
+# Arrays and Slices
 
 # Higher Order Functions and Closures
 
