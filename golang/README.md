@@ -2,6 +2,19 @@ My notes for Go.
 
 Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com/watch?v=un6ZyFkqFKo.
 
+- [What Go is](#what-go-is)
+- [Comparison to C and Python](#comparison-to-c-and-python)
+- [Design Choices](#design-choices)
+- [Hello, World!](#hello-world)
+- [Functions](#functions)
+- [Types](#types)
+- [Variable declarations](#variable-declarations)
+- [Loops and control flow](#loops-and-control-flow)
+- [Pointers and structs](#pointers-and-structs)
+- [Slices](#slices)
+- [Higher Order Functions and Closures](#higher-order-functions-and-closures)
+- [Advanced](#advanced)
+
 # What Go is
 
 A compiled language that aims to get both efficiency and readability.
@@ -19,7 +32,9 @@ Automatically runs the function main, like C.
 
 strongly typed, unlike C. Explicit conversion is required.
 
-"fmt" module - similar in function to stdio in C.
+"fmt" module - similar in function to stdio in C.- [What Go is](#what-go-is)
+
+
 
 boilerplate - first line must be "package NAME", with NAME being the starting function of your program.
 
