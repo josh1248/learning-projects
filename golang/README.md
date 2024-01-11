@@ -10,10 +10,14 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 - [Types](#types)
 - [Variable declarations](#variable-declarations)
 - [Loops and control flow](#loops-and-control-flow)
-- [Pointers and structs](#pointers-and-structs)
+- [structs](#structs)
+- [Pointers](#pointers)
 - [Slices](#slices)
 - [Higher Order Functions and Closures](#higher-order-functions-and-closures)
-- [Advanced](#advanced)
+- [Advanced: Defer / Panic / Recover](#advanced-defer--panic--recover)
+- [Advanced: Concurrency, Goroutines, chan](#advanced-concurrency-goroutines-chan)
+  
+(generated with Markdown All In One in VSCode)
 
 # What Go is
 
@@ -328,21 +332,71 @@ func main() {
 
 control flow statements like `break` and `continue` are supported in Go. `break` even supports goto-like constructs.
 
-# Pointers and structs
+# structs
 
 structs in Go are analagous to structs in C, and can contain multiple fields which are accessed with the "." operator.
 
 similar to typedef in C, use "type" to provide an alias for structs (or even primitive data types). In Go, the alias comes before the struct, unlike in C where the struct is specified first.
 
+structs can be created with positional or named inputs ('struct literals'). Positional creation must specify all fields. Omitted fields in named creation will be given their default zero values.
+
+```Go
+type Vertex struct {
+	X, Y int
+}
+
+var (
+	v1 = Vertex{1, 2}  // has type Vertex
+	v2 = Vertex{X: 1}  // Y:0 is implicit
+	v3 = Vertex{}      // X:0 and Y:0
+	p  = &Vertex{1, 2} // has type *Vertex
+)
 ```
 
+# Pointers
+
+Go has pointers like C. The `&` operator obtains the address of a value, and `*` is used as a dereference operator to obtain the value from a location. The zero value of pointers is `nil`.
+
+Pointers are their own data types. Just like in C, the `*` operator is overloaded to represent the data type: `*int` is a type that is pointer to a value of type `int`.
+
+Locations of custom structs, e.g. a Vertex, will simply be `&{1, 2}` (without change to the String() interface - more on that later.)
+
+However, no pointer arithmetic is allowed in Go.
+
+```Go
+i, j := 42, 2701
+
+p := &i         // point to i
+fmt.Println(*p) // read i through the pointer
+*p = 21         // set i through the pointer
+fmt.Println(i)  // see the new value of i
+
+p = &j         // point to j
+*p = *p / 37   // divide j through the pointer
+fmt.Println(j) // see the new value of j
+```
+
+The `.` operator in Go is overloaded. If it is applied on a struct value, it accesses the field directly. If it is applied on a pointer to a struct, it will dereference before accessing the field.
+
+```Go
+type Vertex struct {
+	X int
+	Y int
+}
+
+func main() {
+	v := Vertex{1, 2}
+	p := &v
+	p.X = 1e9 // (*p).X, or p->X in C, not needed.
+	fmt.Println(v)
+}
 ```
 
 # Slices
 
 # Higher Order Functions and Closures
 
-# Advanced
+# Advanced: Defer / Panic / Recover
 
 Go offers the defer statement, which saves statements into a stack that is executed only when the function ends. Example:
 
@@ -359,4 +413,4 @@ fmt.Println("counting")
 ```
 it is used as an alternative for error handling when used with the `panic` and `recover` constructs.
 
-Go offers generators 
+# Advanced: Concurrency, Goroutines, chan
