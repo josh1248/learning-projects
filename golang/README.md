@@ -16,6 +16,7 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 - [Arrays and Slices](#arrays-and-slices)
 - [Maps (Hash maps / Dicts)](#maps-hash-maps--dicts)
 - [Methods](#methods)
+- [Interfaces](#interfaces)
 - [Advanced: Defer / Panic / Recover](#advanced-defer--panic--recover)
 - [Advanced: Concurrency, Goroutines, chan](#advanced-concurrency-goroutines-chan)
   
@@ -870,6 +871,24 @@ Methods have several advantages:
 		fmt.Println(x) //{18, 24}, as expected
 	}
 	```
+
+
+
+</br>
+</br>
+
+# Interfaces
+
+Go supports interfaces, like TypeScript and Java. 
+
+However, unlike TS / Java which fulfils interfaces using `implements`, Go fulfils interfaces implicitly. As long as a type contains the <ins>**method signatures**</ins> of the interface, it implements that interface automatically. 
+
+Additionally, a Go interface can only contain method functions, not fields (unlike TS). Behaviour, not content.
+
+```Go
+
+```
+
 
 
 </br>
