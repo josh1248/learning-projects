@@ -72,11 +72,15 @@ No ternary operators (bool ? cons : alt) allowed.
 
 Negative indexing not allowed, unlike Python.
 
+Divide operator follows C. Only the quotient is returned for division between two integers (e.g. 10 / 3 = 3). Normal division if both operands are floats (float64(10) / float64(3) = 3.33...)
+
 Unused operators will be flagged as a compile time error. Silence this by using the \_ variable name, a special variable name that cannot be used whatsoever.
 
 Concept of zero values in Go. Variables initalized without assignment are automatically assigned zero values.
 
 Functions are "first class citizens". Higher order functions are supported.
+
+Functional programming `map`, `filter`, and `reduce` constructs are not innately supported, but third party libraries are available: https://github.com/thoas/go-funk
 
 Function closures are used, referencing variables in the block or function it is declared in.
 
