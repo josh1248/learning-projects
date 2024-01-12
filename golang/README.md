@@ -14,10 +14,16 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 - [Pointers](#pointers)
 - [make](#make)
 - [Arrays and Slices](#arrays-and-slices)
+- [Maps (Hash maps / Dicts)](#maps-hash-maps--dicts)
 - [Advanced: Defer / Panic / Recover](#advanced-defer--panic--recover)
 - [Advanced: Concurrency, Goroutines, chan](#advanced-concurrency-goroutines-chan)
   
 (generated with Markdown All In One in VSCode)
+
+
+
+</br>
+</br>
 
 # What Go is
 
@@ -29,6 +35,11 @@ It has very quick compilation time compared to other compiled languages.
 Advanced: Efficient multi-threading as well.
 
 Runtime: An intermediate, below interpreted languages but above compiled languages as it uses Go runtime to ensure memory safety, garbage collection etc.
+
+
+
+</br>
+</br>
 
 # Comparison to C and Python
 
@@ -48,6 +59,11 @@ statically-typed in the style of TypeScript, but without colons to reduce verbos
 
 Permits sequences like in Python to declare multiple items at once, swap, unpack, etc.
 
+
+
+</br>
+</br>
+
 # Design Choices
 
 Semicolons are optional and only for multiple statements within the same line.
@@ -63,6 +79,31 @@ Concept of zero values in Go. Variables initalized without assignment are automa
 Functions are "first class citizens". Higher order functions are supported.
 
 Function closures are used, referencing variables in the block or function it is declared in.
+
+Explicit error checking is expected, compared to error catching in other languages. Many Go functions have a second parameter meant for error checking, example:
+```Python
+#Python
+m = {"one": 1, "two": 2, "three": 3}
+try:
+	print(m["four"])
+except KeyError:
+	print("not found")
+```
+
+```Go
+m := map[string]int{"one": 1, "two": 2, "three": 3}
+val, found := m["four"]
+if found {
+	fmt.Println(val)
+} else {
+	fmt.Println("not found")
+}
+```
+
+
+
+</br>
+</br>
 
 # Hello, World!
 
@@ -87,6 +128,11 @@ import (
 "math"
 )
 ```
+
+
+
+</br>
+</br>
 
 # Functions
 
@@ -180,6 +226,11 @@ func main() {
 
 Notice that in the code above, any time the `adder` function is called, a new block instance is created, which the returned function can access. Hence, the variable `sum` in the 2 adders exist in their separate instances.
 
+
+
+</br>
+</br>
+
 # Types
 
 Go uses types: bool, string, int, uint, byte (alias for uint8), rune (alias for int32), float, complex.
@@ -195,6 +246,13 @@ Basics:
 %v: Default formatting.
 
 %T: prints the type of the variable.
+
+Just like TypeScript, functions can accept multiple types with an `any` type - an alias for an empty interface. More on that later. 
+
+
+
+</br>
+</br>
 
 # Variable declarations
 
@@ -245,16 +303,51 @@ Explicit type conversion is required for Go (hence, strongly typed).
 
 int to string conversion is ASCII-based. For example, string(65) gives "A". For atoi / itoa behaviour like in C, see the strconv package for Go.
 
+
+
+</br>
+</br>
+
 # Loops and control flow
 
 `if-else` functionality is similarly supported in C, but additionally offers an initializer statement as syntactic sugar. Similar to the initializer in `for` loops, it can help to reduce namespace pollution outside of the loop it is used in.
-```
+```Go
 func pow(x, n, lim float64) float64 {
 	if v := math.Pow(x, n); v < lim {
 		return v
 	}
 	return lim
 }
+```
+
+`switch` functionality is present in Go as well, which is a useful alternative for `if-else` cases. Switch conditions do not need to be constants in Go. Additionally, only the first satisfied case is run, so no break statements are required. You may use the `fallthrough` keyword should this be desired behaviour.
+```Go
+//Specified variable
+fmt.Println("When's Saturday?")
+today := time.Now().Weekday()
+switch time.Saturday {
+case today + 0:
+	fmt.Println("Today.")
+case today + 1:
+	fmt.Println("Tomorrow.")
+case today + 2:
+	fmt.Println("In two days.")
+default:
+	fmt.Println("Too far away.")
+}
+
+//Unspecified variable switch statement, defaulting to "switch true".
+t := time.Now()
+switch {
+case t.Hour() < 12:
+	fmt.Println("Good morning!")
+case t.Hour() < 17:
+	fmt.Println("Good afternoon.")
+default:
+	fmt.Println("Good evening.")
+}
+
+
 ```
 
 The **only** looping construct in Go is the `for` loop, with an initializer, expression, and increment. It combines all looping functionalities in both C and Python.
@@ -314,6 +407,11 @@ func main() {
 
 control flow statements like `break` and `continue` are supported in Go. `break` even supports goto-like constructs.
 
+
+
+</br>
+</br>
+
 # structs
 
 structs in Go are analagous to structs in C, and can contain multiple fields which are accessed with the "." operator.
@@ -334,6 +432,11 @@ var (
 	p  = &Vertex{1, 2} // has type *Vertex
 )
 ```
+
+
+
+</br>
+</br>
 
 # Pointers
 
@@ -391,6 +494,11 @@ func main() {
 	printSlice("a", a)
 }
 ```
+
+
+
+</br>
+</br>
 
 # Arrays and Slices
 Go arrays are initalized with a different arrangement from C. Array lengths in golang are fixed (an array's length is part of its type). It is more common to work with slices in Go due to this limitation.
@@ -531,6 +639,79 @@ t := make([]int, len(s), 20)
 copy(t, s) //destination as first argument, source as second.
 ```
 
+
+
+</br>
+</br>
+
+# Maps (Hash maps / Dicts)
+
+Go has a built-in hash map implementation, like dicts in Python, called `map`. Dicts are initialized with the types of the key-value pairs set. Deletion and updating is innately supported like in Python.
+```Go
+
+type Vertex struct {
+	Lat, Long float64
+}
+
+//keys must be of type string, values must be of type Vertex
+var m = map[string]Vertex{
+	"Bell Labs": Vertex{
+		40.68433, -74.39967,
+	},
+	"Google": Vertex{
+		37.42202, -122.08408,
+	},
+}
+
+func main() {
+	/*Not allowed due to mistmatched type:
+	m[12] = Vertex{10, 4}
+	m["hello"] = 99
+	*/
+
+	//Create
+	m["meridian"] = Vertex{Long: 0.0015}
+
+	//Read
+	fmt.Println(m["Bell Labs"])
+	//Reading of non-existent keys do not trigger errors, zero values are returned.
+	fmt.Println(m["hmmm???"])
+
+	//Update
+	m["meridian"] = Vertex{51.4779, 0.0015}
+
+	//Delete
+	delete(m, "meridian")
+	//Deletion of non-existent keys do not trigger errors
+	delete(m, "hahahaha")
+}
+
+```
+
+Syntactic sugar is offered for custom types in initialization only:
+```Go
+var m = map[string]Vertex{
+	"Bell Labs": {40.68433, -74.39967},
+	"Google":    {37.42202, -122.08408},
+}
+```
+
+Notice that reading and deletion of non-existent keys do not throw errors in the example above.
+
+Language constructs in Go support explicit "error" checking using a 2-value assignment. This is a common pattern in Go which will be later seen.
+```Go
+m := make(map[string]int)
+v, ok := m["hello"]
+if ok {
+	fmt.Println(v)
+} else {
+	fmt.Println("not found")
+}
+```
+
+</br>
+</br>
+
 # Advanced: Defer / Panic / Recover
 
 Go offers the defer statement, which saves statements into a stack that is executed only when the function ends. Example:
@@ -547,5 +728,10 @@ fmt.Println("counting")
 }
 ```
 it is used as an alternative for error handling when used with the `panic` and `recover` constructs.
+
+
+
+</br>
+</br>
 
 # Advanced: Concurrency, Goroutines, chan
