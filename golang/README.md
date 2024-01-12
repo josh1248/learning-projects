@@ -188,6 +188,8 @@ quad := func(y int) int {
 }
 fmt.Println(quad(20))
 ```
+*Pretend that I have written `package main` and `import "fmt"` before this, I am lazy to type it again and again.*
+
 
 Higher order functions are supported in Go.
 ```Go
@@ -676,6 +678,19 @@ t := make([]int, len(s), 20)
 copy(t, s) //destination as first argument, source as second.
 ```
 
+2D slices are supported as expected:
+```Go
+func ZeroMatrix(rows, cols int) (m [][]int) {
+	for i := 0; i < rows; i++ {
+		m = append(m, make([]int, cols))
+	}
+	return m
+}
+
+func main() {
+	fmt.Println(ZeroMatrix(4, 5))
+}
+```
 
 
 </br>
@@ -752,6 +767,109 @@ if ok {
 </br>
 
 # Methods
+
+While Go does not have classes, it supports methods, which are defined on a different syntax, with the type stated right after `func` but before the function name. This bracket, i.e. `(v Vertex)`, is called the *receiver* argument of the function.
+
+```Go
+func (v Vertex) sum() float64 {
+	return v.X + v.Y
+}
+
+x := Vertex{12.3, 45.6}
+x.sum() //example use
+```
+
+**NOTE**: Methods can only be declared on types specified in the same package as the method, including primitive types.
+
+```Go
+type MyFloat float64
+
+func (f MyFloat) Abs() float64 {
+	if f < 0 { return float64(-f) }
+	return float64(f)
+}
+```
+
+Methods have several advantages:
+
+1. Code Arrangement
+	
+	Functions can only be accessed by values of that type, which makes it clear to a viewer that only values of that type can use a given function.
+
+2. Namespaces
+   
+	The same function name can be re-used for method functions with different receivers:
+
+	```Go
+	type MyFloat float64
+
+	func (f MyFloat) Abs() float64 {
+		if f < 0 { return float64(-f) }
+		return float64(f)
+	}
+
+	type Vertex struct {
+		X, Y float64
+	}
+
+	func (v Vertex) Abs() float64 {
+		return math.Sqrt(v.X*v.X + v.Y*v.Y)
+	}
+
+	func main() {
+		v := Vertex{3, 4}; fmt.Println(v.Abs())
+		x := MyFloat(-4.52); fmt.Println(x.Abs())
+	}
+	```
+
+3. Pointer Indirection
+	
+	For general functions, the input type must be strictly followed. Even values of type `*Vertex`, for example, cannot use functions of type `Vertex`:
+	```Go
+	func mut_double(v *Vertex) {
+		v.Lat *= 2; v.Long *= 2
+	}
+
+	func main() {
+		v := Vertex{3, 4}
+		fmt.Println((&v).mut_double)
+		//Wrong type! v is type Vertex, not *Vertex
+		fmt.Println(v.mut_double)
+	}
+	```
+	
+	 When using method functions, however, values of type `Vertex` can use method functions of type `*Vertex`, and vice-versa, all thanks to the versatility of the `.` operator, which can simplify both dereferencing and addressing.
+
+	```Go
+	type Vertex struct {
+		X, Y float64
+	}
+
+	func (v Vertex) Abs() float64 {
+		return math.Sqrt(v.X*v.X + v.Y*v.Y)
+	}
+
+
+	//method function of type *Vertex
+	func (v *Vertex) Scale(c float64) {
+		v.X *= c; v.Y *= c
+	}
+
+	func main() {
+		x := Vertex{3, 4}
+		x_adr := &x
+
+		fmt.Println(x.Abs()) //Ok
+		fmt.Println(x_adr.Abs()) //automatically dereferenced
+
+		x_adr.Scale(3) //Ok
+		fmt.Println(x) //{9, 12}, as expected
+		
+		//type Vertex does not have method Scale, so it uses Scale defined in *Vertex by addressing.
+		x.Scale(2)
+		fmt.Println(x) //{18, 24}, as expected
+	}
+	```
 
 
 </br>
