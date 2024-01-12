@@ -15,6 +15,7 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 - [make](#make)
 - [Arrays and Slices](#arrays-and-slices)
 - [Maps (Hash maps / Dicts)](#maps-hash-maps--dicts)
+- [Methods](#methods)
 - [Advanced: Defer / Panic / Recover](#advanced-defer--panic--recover)
 - [Advanced: Concurrency, Goroutines, chan](#advanced-concurrency-goroutines-chan)
   
@@ -73,6 +74,8 @@ No ternary operators (bool ? cons : alt) allowed.
 Negative indexing not allowed, unlike Python.
 
 Divide operator follows C. Only the quotient is returned for division between two integers (e.g. 10 / 3 = 3). Normal division if both operands are floats (float64(10) / float64(3) = 3.33...)
+
+Single quotes represent Unicode characters in the `rune` type, an alias for int32. Double quotes represent strings, which are byte slices. Expect to convert between runes and byte slices often in Go.
 
 Unused operators will be flagged as a compile time error. Silence this by using the \_ variable name, a special variable name that cannot be used whatsoever.
 
@@ -481,6 +484,36 @@ func main() {
 }
 ```
 
+Pointers are used for 2 reasons:
+- Pointers 'pass by reference', which allows the function to directly mutate the given integer without re-assignment required.
+- Pointers do not store data, so you do not need to create a new copy when using your function, unlike 'pass by value' functions.
+
+```Go
+package main
+
+import "fmt"
+
+type Vertex struct {
+	Long, Lat float64
+}
+
+//a copy of v is given to this function to work with, not the 'real' v.
+func double(v Vertex) {
+	v.Long *= 2; v.Lat *= 2
+}
+
+//an address is given to this function to modify values directly.
+func mut_double(v *Vertex) {
+	v.Long *= 2; v.Lat *= 2
+}
+
+func main() {
+	test := Vertex{Long: 12.3, Lat: 45.6}
+	double(test); fmt.Println(test) //still returns 12.3, 45.6
+	mut_double(&test); fmt.Println(test) //returns 24.6, 91.2
+}
+```
+
 # make
 The built-in `make` function is Go's method of creating dynamically generated *anything*, as will be shortly seen.
 ```Go
@@ -712,6 +745,14 @@ if ok {
 	fmt.Println("not found")
 }
 ```
+
+
+
+</br>
+</br>
+
+# Methods
+
 
 </br>
 </br>
