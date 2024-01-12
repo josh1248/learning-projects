@@ -17,8 +17,9 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 - [Maps (Hash maps / Dicts)](#maps-hash-maps--dicts)
 - [Methods](#methods)
 - [Interfaces](#interfaces)
+- [Advanced: Stringer and Error interfaces](#advanced-stringer-and-error-interfaces)
+- [Advanced: Goroutines, Concurrency, chan](#advanced-goroutines-concurrency-chan)
 - [Advanced: Defer / Panic / Recover](#advanced-defer--panic--recover)
-- [Advanced: Concurrency, Goroutines, chan](#advanced-concurrency-goroutines-chan)
   
 (generated with Markdown All In One in VSCode)
 
@@ -889,6 +890,15 @@ Additionally, a Go interface can only contain method functions, not fields (unli
 
 ```
 
+# Advanced: Stringer and Error interfaces
+
+
+
+</br>
+</br>
+
+# Advanced: Goroutines, Concurrency, chan
+
 
 
 </br>
@@ -915,5 +925,3 @@ it is used as an alternative for error handling when used with the `panic` and `
 
 </br>
 </br>
-
-# Advanced: Concurrency, Goroutines, chan
