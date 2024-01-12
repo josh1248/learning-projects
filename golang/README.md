@@ -14,7 +14,6 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 - [Pointers](#pointers)
 - [make](#make)
 - [Arrays and Slices](#arrays-and-slices)
-- [Higher Order Functions and Closures](#higher-order-functions-and-closures)
 - [Advanced: Defer / Panic / Recover](#advanced-defer--panic--recover)
 - [Advanced: Concurrency, Goroutines, chan](#advanced-concurrency-goroutines-chan)
   
@@ -51,37 +50,19 @@ Permits sequences like in Python to declare multiple items at once, swap, unpack
 
 # Design Choices
 
-No ternary operators (bool ? cons : alt) allowed as a design choice.
+Semicolons are optional and only for multiple statements within the same line.
+
+No ternary operators (bool ? cons : alt) allowed.
+
+Negative indexing not allowed, unlike Python.
 
 Unused operators will be flagged as a compile time error. Silence this by using the \_ variable name, a special variable name that cannot be used whatsoever.
+
+Concept of zero values in Go. Variables initalized without assignment are automatically assigned zero values.
 
 Functions are "first class citizens". Higher order functions are supported.
 
 Function closures are used, referencing variables in the block or function it is declared in.
-
-```Go
-package main
-
-import "fmt"
-
-func adder() func(int) int {
-	sum := 0
-	return func(x int) int {
-		sum += x
-		return sum
-	}
-}
-
-func main() {
-	pos, neg := adder(), adder()
-	for i := 0; i < 10; i++ {
-		fmt.Println(
-			pos(i),
-			neg(-2*i),
-		)
-	}
-}
-```
 
 # Hello, World!
 
@@ -412,8 +393,143 @@ func main() {
 ```
 
 # Arrays and Slices
+Go arrays are initalized with a different arrangement from C. Array lengths in golang are fixed (an array's length is part of its type). It is more common to work with slices in Go due to this limitation.
+```Go
+var a [10]int
+//C: int a[10]
+var powers = [6]int{1, 2, 4, 8, 16, 32}
+```
 
-# Higher Order Functions and Closures
+Slices of arrays are offered in Golang. Initalize a slice with an empty square bracket.
+```Go
+var powers = [6]int{1, 2, 4, 8, 16, 32}
+//[]int is optional as it can be obtained from type inference.
+var single_digits []int = powers[0:4] 
+```
+Just like Python, if unspecified, the low bound takes the value 0 and the high bound takes the value of the length of the slice.
+
+**Note:** slices do not store data. They only refer to their original arrays.
+
+
+```Go
+func main() {
+	names := [4]string{
+		"John",
+		"Paul",
+		"George",
+		"Ringo",
+	}
+	fmt.Println(names)
+
+	var a []string = names[0:2] //["John", "Paul"]
+	b := names[1:] //["Paul", "George", "Ringo"]
+	fmt.Println(a, b)
+
+	b[0] = "XXX"
+	fmt.Println(a, b)
+	fmt.Println(names)
+}
+```
+
+A slice literal is an array literal but without the fixed length requirement (hence why it is more common). The examples below create an array before returning a slice that references it.
+```Go
+func main() {
+	q := []int{2, 3, 5, 7, 11, 13}
+	fmt.Println(q)
+
+	r := []bool{true, false, true, true, false, true}
+	fmt.Println(r)
+
+	s := []struct {
+		i int
+		b bool
+	}{
+		{2, true},
+		{3, false},
+		{5, true},
+		{7, true},
+		{11, false},
+		{13, true},
+	}
+	fmt.Println(s)
+}
+```
+
+Slices in Go have a length (no. of elements) and capacity (max no. of elements) attribute that can be accessed with `len()` and `cap()`. Slices can extend their length up to its capacity.
+
+```Go
+func main() {
+	s := []int{2, 3, 5, 7, 11, 13}; printSlice(s)
+
+	// Slice the slice to give it zero length.
+	s = s[:0]; printSlice(s)
+
+	// Extend its length.
+	s = s[:4]; printSlice(s)
+
+	// Drop its first two values.
+	s = s[2:]; printSlice(s)
+}
+
+func printSlice(s []int) {
+	fmt.Printf("len=%d cap=%d %v %T\n", len(s), cap(s), s, s)
+}
+```
+
+The zero value of a slice is `nil`, with length and capacity 0 and no referencing array.
+
+```Go
+//value nil, len(s) = 0, cap(s) = 0
+var s []int
+```
+
+Dynamic array sizes in C with `malloc` is simplified with `make` in Go for slices, with automatic memory management. Arrays are not used that often in Go.
+
+```Go
+//len(b) = 0, cap(b) = 5. 3rd argument is optional and equals len if omitted.
+b := make([]int, 0, 5) 
+
+//Example dynamic slice function.
+func dynamic_size(size int) []int {
+	return make([]int, size, size + 20)
+}
+
+```
+
+`append` is a powerful built-in function that allows you to append elements to slices, automatically increasing its capacity if required. The `...` operator notation has an equivalent effect to the spread `...` operator in JavaScript or the `*` unpack operator in Python, allowing you to append 2 slices if needed.
+
+```Go
+func main() {
+	var s []int; printSlice(s)
+
+	//len = 1, cap = 1, [9]
+	s = append(s, 9); printSlice(s)
+
+	//len = 2, cap = 2, [9 8]
+	s = append(s, 8); printSlice(s)
+
+	//len = 5, cap = 6, [9 8 7 6 5]
+	s = append(s, 7, 6, 5); printSlice(s)
+	
+	t := []int{4, 3, 2, 1}
+	x := append(s, t...); printSlice(x)
+	//s and t still exists.
+	printSlice(s)
+	printSlice(t)
+}
+
+func printSlice(s []int) {
+	fmt.Printf("len=%d cap=%d %v\n", len(s), cap(s), s)
+}
+```
+
+An older method to resize arrays is using the built-in `copy` function:
+
+```Go
+s := []int{1, 2, 3}
+t := make([]int, len(s), 20)
+copy(t, s) //destination as first argument, source as second.
+```
 
 # Advanced: Defer / Panic / Recover
 
