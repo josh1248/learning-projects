@@ -8,6 +8,7 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 - [Hello, World!](#hello-world)
 - [Functions](#functions)
 - [Types](#types)
+	- [A sidenote on Runes and Encoding](#a-sidenote-on-runes-and-encoding)
 - [Variable declarations](#variable-declarations)
 - [Loops and control flow](#loops-and-control-flow)
 - [structs](#structs)
@@ -16,10 +17,14 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 - [Arrays and Slices](#arrays-and-slices)
 - [Maps (Hash maps / Dicts)](#maps-hash-maps--dicts)
 - [Methods](#methods)
-- [Interfaces](#interfaces)
-- [Advanced: Stringer and Error interfaces](#advanced-stringer-and-error-interfaces)
+- [Interfaces, Interfaces, Interfaces](#interfaces-interfaces-interfaces)
+	- [No `implements` keyword](#no-implements-keyword)
+	- [Multi-type functions using interfaces](#multi-type-functions-using-interfaces)
+	- [Stringer interface](#stringer-interface)
+	- [Errors with the error interface](#errors-with-the-error-interface)
+	- [Reader interface](#reader-interface)
 - [Advanced: Goroutines, Concurrency, chan](#advanced-goroutines-concurrency-chan)
-- [Advanced: Defer / Panic / Recover](#advanced-defer--panic--recover)
+- [Advanced: Defer](#advanced-defer)
   
 (generated with Markdown All In One in VSCode)
 
@@ -108,8 +113,6 @@ if found {
 	fmt.Println("not found")
 }
 ```
-
-
 
 </br>
 </br>
@@ -260,7 +263,46 @@ Basics:
 
 Just like TypeScript, functions can accept multiple types with an `any` type - an alias for an empty interface. More on that later. 
 
+## A sidenote on Runes and Encoding
+English characters can be represented by a number between 0 and 255 within ASCII. However, other Unicode characters can take up to 32 bits to be represented, like emojis and non-English letters. Thus, `rune` as an alias for `int32` was created, which allows Go to process non-English characters within a `string`, which is secretly a `byte` array.
 
+Thus, your code may have to convert a `string` into runes first before string processing of non-English characters.
+```Go
+package main
+
+import "fmt"
+
+func main() {
+	example := "a💁b👌cd🎍ef😍g"
+	
+	//Breaks down
+	for i := 0; i < len(example); i++ {
+		fmt.Printf("%c", example[i])
+	}
+	
+	fmt.Print("\n")
+	
+	//Rune conversion
+	better := []rune(example)
+	for i := 0; i < len(better); i++ {
+		fmt.Printf("%c", better[i])
+	}
+	
+	fmt.Print("\n")
+	
+	//Auto-conversion to rune in ranges
+	for _, letter := range example {
+		fmt.Printf("%c", letter)
+	}
+}
+```
+
+```
+aðbðcdðefðg
+a💁b👌cd🎍ef😍g
+a💁b👌cd🎍ef😍g
+Program exited.
+```
 
 </br>
 </br>
@@ -878,25 +920,315 @@ Methods have several advantages:
 </br>
 </br>
 
-# Interfaces
+# Interfaces, Interfaces, Interfaces
 
 Go supports interfaces, like TypeScript and Java. 
 
+## No `implements` keyword
 However, unlike TS / Java which fulfils interfaces using `implements`, Go fulfils interfaces implicitly. As long as a type contains the <ins>**method signatures**</ins> of the interface, it implements that interface automatically. 
 
-Additionally, a Go interface can only contain method functions, not fields (unlike TS). Behaviour, not content.
-
 ```Go
+package main
+
+import "fmt"
+
+type I interface {
+	M()
+}
+
+type T struct {
+	S string
+}
+
+// This method means type T implements the interface I,
+// but we don't need to explicitly declare that it does so.
+func (t T) M() {
+	fmt.Println(t.S)
+}
+
+func main() {
+	var i I = T{"hello"}
+	i.M()
+}
 
 ```
 
-# Advanced: Stringer and Error interfaces
+"Under the hood", interface values can be thought of as a tuple of a value and a concrete type, whereby an interface value holds a value of a specific underlying concrete type, based on which the methods are executed.
 
+```Go
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
+type I interface {
+	M()
+}
+
+type T struct {
+	S string
+}
+
+func (t *T) M() {
+	fmt.Println(t.S, ", type T")
+}
+
+type F float64
+
+func (f F) M() {
+	fmt.Println(f, ", type F")
+}
+
+func main() {
+	var i I
+
+	i = &T{"Hello"}
+	describe(i)
+	i.M()
+
+	i = F(math.Pi)
+	describe(i)
+	i.M()
+}
+
+func describe(i I) {
+	fmt.Printf("(%v, %T)\n", i, i)
+}
+```
+
+Go allows for uninitalized types which satisfies an interface to be handled within a function, instead of trigerring a null pointer exception. However, an error will still be triggered if the type is not specified.
+```Go
+func (t *T) M() {
+	if t == nil {
+		fmt.Println("<nil>")
+		return
+	}
+	fmt.Println(t.S)
+}
+
+func main() {
+	var i I
+	var t *T
+	i = t
+	describe(i)
+	i.M() //ok
+
+	var i_2 I
+	describe(i_2)
+	i_2.M() //not allowed
+}
+```
+
+## Multi-type functions using interfaces
+An empty interface, which has the alias *any* in Go, allows functions to take in any type. This is because the empty interface is implemented by all types, as all types contain all 0 of the methods that the empty interface has. 
+
+In the example below, notice that the logic is largely duplicated.
+
+```Go
+package main
+
+import "fmt"
+func main() {
+	var i interface{}
+	describe(i)
+
+	i = 42
+	describe(i)
+
+	i = "hello"
+	describe(i)
+}
+
+func duplicate(i interface{}) {
+	fmt.Printf("(%v, %T)\n", i, i)
+}
+```
+
+Type assertions allow us to insist on some variable having a certain type before moving on. Explicit error checking allows us to determine a further course of action, while no checking will cause a *panic* in the program:
+
+```Go
+package main
+
+import "fmt"
+
+func main() {
+	var i interface{} = "hello"
+
+	s := i.(string)
+	fmt.Println(s)
+
+	s, ok := i.(string) //ok == true
+	fmt.Println(s, ok)
+
+	f, ok := i.(float64) //ok == false
+	fmt.Println(f, ok)
+
+	f = i.(float64) // panic
+	fmt.Println(f)
+}
+```
+
+Type assertions can also be applied into multi-type functions within type switches.
+
+```Go
+package main
+
+import "fmt"
+
+func do(i interface{}) {
+	switch v := i.(type) {
+	case int:
+		fmt.Printf("Twice %v is %v\n", v, v*2)
+	case string:
+		fmt.Printf("%q is %v bytes long\n", v, len(v))
+	default:
+		fmt.Printf("I don't know about type %T!\n", v)
+	}
+}
+
+func main() {
+	do(21)
+	do("hello")
+	do(true)
+}
+
+```
+
+## Stringer interface
+The fmt package uses the following interface:
+```Go
+type Stringer interface {
+    String() string
+}
+```
+Therefore, implementing the String() method will allow us to customise printing into I/O, useful for formatting or debugging purposes.
+
+```Go
+package main
+
+import "fmt"
+
+type MyInt int64
+
+func (p MyInt) String() string {
+	return fmt.Sprintf("my cool new int: %d", p)
+}
+
+func main() {
+	var x MyInt = 444
+	fmt.Println(x)
+}
+
+```
+
+## Errors with the error interface
+Errors are implemented in Go using the error interface, and is built into all Go programs:
+```Go
+type error interface {
+    Error() string
+}
+```
+
+Go convention: a nil error value indicates success, a non-nil erorr value indicates failure.
+
+We can use the built-in `errors` package and use `errors.New()`, which turns a string into the error type to be checked. Alternatively, we can implement our own Error() function within a custom type:
+
+```Go
+package main
+
+import (
+	"fmt"
+)
+
+type ErrNegativeSqrt float64
+
+func (e ErrNegativeSqrt) Error() string {
+	return fmt.Sprintf("cannot sqrt negative number: %d", float64(e))
+}
+
+func Sqrt(x float64) (float64, error) {
+	if x < 0 {
+		return x, ErrNegativeSqrt(x)
+	}
+	var z float64 = 1
+	for j := 0; j < 10; j++ {
+		fmt.Println(z)
+		z -= (z*z - x) / (2*z)
+	}
+	return z, nil
+}
+
+func main() {
+	fmt.Println(Sqrt(2))
+	i, ok := Sqrt(-2)
+	fmt.Println(i)
+	fmt.Println(ok)
+}
+
+```
 
 
 </br>
 </br>
 
+## Reader interface
+
+The `io.Reader` interface implements an abstraction barrier for taking in input. It can be attained by `import "io"`.
+
+```Go
+type Reader interface {
+	Read(p []byte) (n int, err error)
+}
+```
+
+A Read() function is expected to populate a slice of bytes. An EOF error is returned when some input source runs out. For example:
+```Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"strings"
+)
+
+func main() {
+	r := strings.NewReader("Hello, Reader!")
+
+	b := make([]byte, 8)
+	for {
+		n, err := r.Read(b)
+		fmt.Printf("n = %v err = %v b = %v\n", n, err, b)
+		fmt.Printf("b[:n] = %q\n", b[:n])
+		if err == io.EOF {
+			break
+		}
+	}
+}
+```
+
+Output:
+```
+n = 8 err = <nil> b = [72 101 108 108 111 44 32 82]
+b[:n] = "Hello, R"
+n = 6 err = <nil> b = [101 97 100 101 114 33 32 82]
+b[:n] = "eader!"
+n = 0 err = EOF b = [101 97 100 101 114 33 32 82]
+b[:n] = ""
+```
+
+The following code below implements an infinite input stream:
+```Go
+type MyReader struct{}
+
+func (x MyReader) Read(a []byte) (int, error) {
+	for idx, _ := range a {
+		a[idx] = 'A'	
+	}
+	return len(a), nil	
+}
+```
 # Advanced: Goroutines, Concurrency, chan
 
 
@@ -904,7 +1236,7 @@ Additionally, a Go interface can only contain method functions, not fields (unli
 </br>
 </br>
 
-# Advanced: Defer / Panic / Recover
+# Advanced: Defer
 
 Go offers the defer statement, which saves statements into a stack that is executed only when the function ends. Example:
 
