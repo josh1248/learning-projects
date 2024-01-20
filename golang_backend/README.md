@@ -200,8 +200,21 @@ You may use `encoding/gob` if all decoding and encoding will be run in Go progra
 
 # SQL Database Communication (in PostgreSQL)
 
+SQL tutorial [here.]()
+
 Go offers innate database communication using the `database/sql` module. It does so by offering SQL queries that run on any database, once set up.
 
 You can (and should) communicate with your database language of choice through `database/sql` as an interface, with the 3rd party drivers doing the implementation.
 
 The tutorial offered in the book uses the PostgreSQL driver as it offers a pure Go driver implementation at https://www.github.com/lib/pq but other drivers are also available (see fill list at https://go.dev/wiki/SQLDrivers)
+
+The relevant import statements are:
+
+```Go
+import (
+    "database/sql"
+    _ "github.com/lib/pq"
+)
+```
+
+**NOTE**: _ is an applied alias that silences the Go compiler's complaint that a package is imported but never used. This is because our imported package for Postgres is meant to invoke its side effects in `init()` even though we wont call any of its functions.
