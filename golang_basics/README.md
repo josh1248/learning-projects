@@ -23,6 +23,7 @@ Based on https://go.dev/tour/list, cross referenced with https://www.youtube.com
 	- [Stringer interface](#stringer-interface)
 	- [Errors with the error interface](#errors-with-the-error-interface)
 	- [Reader interface](#reader-interface)
+- [Organizing your code](#organizing-your-code)
 - [Advanced: Goroutines, Concurrency, chan](#advanced-goroutines-concurrency-chan)
 - [Advanced: Defer](#advanced-defer)
   
@@ -1229,6 +1230,14 @@ func (x MyReader) Read(a []byte) (int, error) {
 	return len(a), nil	
 }
 ```
+
+# Organizing your code
+Go code can be arranged into packages which can then be used in different files. This ensures that our code is modular and reusable, which greatly helps in increasing code re-use and maintainability.
+
+Go packages are based on directories, which can each have different files. Each file can then declare that they belong to some package to be used.
+
+
+
 # Advanced: Goroutines, Concurrency, chan
 
 
