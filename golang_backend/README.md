@@ -200,7 +200,7 @@ You may use `encoding/gob` if all decoding and encoding will be run in Go progra
 
 # SQL Database Communication (in PostgreSQL)
 
-SQL tutorial [here.]()
+SQL tutorial [here.](https://github.com/josh1248/learning-projects/blob/main/sql/README.md)
 
 Go offers innate database communication using the `database/sql` module. It does so by offering SQL queries that run on any database, once set up.
 
