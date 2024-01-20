@@ -6,7 +6,7 @@ Notes for Go regarding relevant concepts for doing a Go backend.
   - [Decoding (Dynamic)](#decoding-dynamic)
   - [Encoding](#encoding)
   - [Alternatives](#alternatives)
-- [Database Communication in PostgreSQL](#database-communication-in-postgresql)
+- [Database Communication (in PostgreSQL)](#database-communication-in-postgresql)
 
 # JSON and RESTful APIs
 
@@ -198,4 +198,10 @@ func MarshalIndent(v any, prefix, indent string) ([]byte, error)
 You may use `encoding/gob` if all decoding and encoding will be run in Go programs. It sacrifices some language-agnostic behaviour for speed and efficiency.
 
 
-# Database Communication in PostgreSQL
+# Database Communication (in PostgreSQL)
+
+Go offers innate database communication using the `database/sql` module. It does so by offering SQL queries that run on any database, once set up.
+
+You can (and should) communicate with your database language of choice through `database/sql` as an interface, with the 3rd party drivers doing the implementation.
+
+The tutorial offered in the book uses the PostgreSQL driver as it offers a pure Go driver implementation at https://www.github.com/lib/pq but other drivers are also available (see fill list at https://go.dev/wiki/SQLDrivers)
