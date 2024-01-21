@@ -1,4 +1,4 @@
-module main.go
+module init.go
 
 go 1.21.6
 

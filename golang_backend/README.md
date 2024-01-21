@@ -7,6 +7,7 @@ Notes for Go regarding relevant concepts for doing a Go backend.
 	- [Encoding](#encoding)
 	- [Alternatives](#alternatives)
 - [SQL Database Communication (in PostgreSQL)](#sql-database-communication-in-postgresql)
+	- [Establishing a connection](#establishing-a-connection)
 - [HTTP Client and Servers with net/http](#http-client-and-servers-with-nethttp)
 	- [Read data with GET requests](#read-data-with-get-requests)
 	- [Send data with POST](#send-data-with-post)
@@ -222,7 +223,55 @@ import (
 
 **NOTE**: _ is an applied alias that silences the Go compiler's complaint that a package is imported but never used. This is because our imported package for Postgres is meant to invoke its side effects in `init()` even though we wont call any of its functions.
 
-...
+
+I used the Postgres app (Universal version 16) and pgAdmin 4 for this task. Within the Postgres app, I used the default `127.0.0.1` localhost on port `5432`. I have also decided to stick with the default `postgres` superuser to create a database with a password of choice (I set a dummy password here for demonstration.)
+
+The built-in `database/sql` package allows us to directly liaise with our database via the 3rd party driver. We can perform the crucial Create, Read, Update, and Delete (CRUD) functionalities with 
+
+## Establishing a connection
+
+First, the `Open` function allows us to establish a connection with our credentials. Our credentials must be that of a superuser with permission to create a new database. In this case, I will use the `postgres` superuser I have set up.
+
+```Go
+package main
+
+import (
+	"database/sql"
+	"log"
+
+	_ "github.com/lib/pq"
+)
+
+func main() {
+	credentials := `
+		user=postgres
+		password=xddd
+		host=127.0.0.1
+		port=5432
+		dbname=postgres
+		sslmode=disable
+	`
+	db, err := sql.Open("postgres", credentials)
+	defer db.Close()
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		log.Println("Driver opened.")
+	}
+
+	if check := db.Ping(); check != nil {
+		log.Fatal(check)
+	} else {
+		log.Println("Connection to database established.")
+	}
+
+	//...
+}
+```
+
+The `db` variable represents our database connection, which the `Open` function sets up. The `Ping` function is an additional test that verifies that the database connection is present.
+
+
 
 
 # HTTP Client and Servers with net/http
