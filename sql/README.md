@@ -23,3 +23,9 @@ Each column can take on a specified type. Here are some availables types for use
 |Data Types|Description|
 |--|--|
 |INT|integer value of 32 bytes. BIGINT for 64 bytes, and SMALLINT|
+
+
+# PostgreSQL stuff
+running on Postgres app, based on a tutorial at https://www.youtube.com/watch?v=qw--VYLpxG4. However, I will be using a GUI at pgAdmin 4 instead of the native psql shell.
+
+

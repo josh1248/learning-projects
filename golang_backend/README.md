@@ -2,11 +2,14 @@ Notes for Go regarding relevant concepts for doing a Go backend.
 - [JSON and RESTful APIs](#json-and-restful-apis)
 - [Built-in support and Frameworks](#built-in-support-and-frameworks)
 - [JSON encoding / decoding with encoding/json](#json-encoding--decoding-with-encodingjson)
-  - [Decoding (Fixed)](#decoding-fixed)
-  - [Decoding (Dynamic)](#decoding-dynamic)
-  - [Encoding](#encoding)
-  - [Alternatives](#alternatives)
+	- [Decoding (Fixed)](#decoding-fixed)
+	- [Decoding (Dynamic)](#decoding-dynamic)
+	- [Encoding](#encoding)
+	- [Alternatives](#alternatives)
 - [SQL Database Communication (in PostgreSQL)](#sql-database-communication-in-postgresql)
+- [HTTP Client and Servers with net/http](#http-client-and-servers-with-nethttp)
+	- [Read data with GET requests](#read-data-with-get-requests)
+	- [Send data with POST](#send-data-with-post)
 
 # JSON and RESTful APIs
 
@@ -218,3 +221,132 @@ import (
 ```
 
 **NOTE**: _ is an applied alias that silences the Go compiler's complaint that a package is imported but never used. This is because our imported package for Postgres is meant to invoke its side effects in `init()` even though we wont call any of its functions.
+
+...
+
+
+# HTTP Client and Servers with net/http
+`net/http` provides innate support for sending requests like GET or POST to a HTTP server to obtain data.
+
+## Read data with GET requests
+
+
+Here is example code to obtain data from a HTTP server. We obtain it as a string that represents some JSON. Advanced HTTP clients like Firefox convert them into readable items. This is available in the test repository [here](http_client/1_get/main.go)
+
+```Go
+package main
+
+import (
+	"io"
+	"log"
+	"net/http"
+)
+
+func getData(target string) string {
+	//1: GET request
+	r, err := http.Get(target)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer r.Body.Close()
+
+	//2: receive data
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//3: return data
+	return string(data)
+}
+
+func main() {
+	data := getData("https://www.google.com")
+	//In HTTP clients like Firefox or Chrome, this is formatted into an interactive webpage.
+	log.Println(data)
+}
+```
+
+Now, lets make a rudimentary HTTP server-client pair that passes around a fake JSON string.
+
+```
+2_basic_server
+ ┣ client
+ ┃ ┗ client.go
+ ┗ server
+ ┃ ┗ server.go
+```
+*This file structure representation was generated using the file-tree-generator extension in VSCode, which you can find at https://marketplace.visualstudio.com/items?itemName=Shinotatwu-DS.file-tree-generator*
+
+For our server, we define the following string that represents JSON to be returned:
+```Go
+package main
+
+import (
+	"log"
+	"net/http"
+)
+
+type server struct{}
+
+func (srv server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	msg := `{"message": "hello world!", "knowledge" : 42}`
+	w.Write([]byte(msg))
+}
+
+func main() {
+	log.Fatal(http.ListenAndServe(":8080", server{}))
+}
+```
+
+Since our string is a valid JSON format, we can use `Unmarshal` to decode it as though it was JSON. Since we know in advance what JSON we are getting, let's adjust our client to process and decode the expected output from the server:
+```Go
+package main
+
+import (
+	"encoding/json"
+	"io"
+	"log"
+	"net/http"
+)
+
+type messageData struct {
+	Message string `json:"message"`
+	Number  int    `json:"knowledge"`
+}
+
+func getData(target string) messageData {
+	//1: GET request
+	r, err := http.Get(target)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer r.Body.Close()
+
+	//2: receive data
+	data, err := io.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//3: process data
+	message := messageData{}
+	err = json.Unmarshal(data, &message)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//4: return data
+	return message
+}
+
+func main() {
+	data := getData("http://localhost:8080")
+	//In HTTP clients like Firefox or Chrome, this is formatted into an interactive webpage.
+	log.Println(data)
+}
+```
+
+To check that this works, go to each separate `server` and `client` directory and run `go run server.go` and `go run client.go` respectively. You will need to open up 2 clients to make this work. Volia!
+
+## Send data with POST
