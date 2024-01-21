@@ -7,7 +7,9 @@ Notes for Go regarding relevant concepts for doing a Go backend.
 	- [Encoding](#encoding)
 	- [Alternatives](#alternatives)
 - [SQL Database Communication (in PostgreSQL)](#sql-database-communication-in-postgresql)
+	- [Setup](#setup)
 	- [Establishing a connection](#establishing-a-connection)
+	- [Creating (Inserting) Data](#creating-inserting-data)
 - [HTTP Client and Servers with net/http](#http-client-and-servers-with-nethttp)
 	- [Read data with GET requests](#read-data-with-get-requests)
 	- [Send data with POST](#send-data-with-post)
@@ -226,9 +228,31 @@ import (
 
 I used the Postgres app (Universal version 16) and pgAdmin 4 for this task. Within the Postgres app, I used the default `127.0.0.1` localhost on port `5432`. I have also decided to stick with the default `postgres` superuser to create a database with a password of choice (I set a dummy password here for demonstration.)
 
-The built-in `database/sql` package allows us to directly liaise with our database via the 3rd party driver. We can perform the crucial Create, Read, Update, and Delete (CRUD) functionalities with 
+The built-in `database/sql` package allows us to directly liaise with our database via the 3rd party driver. We can perform the crucial Create, Read, Update, and Delete (CRUD) functionalities with our database in persistent memory.
+
+## Setup
+
+We will create the following folder and files:
+```
+sql_tests
+ ┣ 1_connect
+ ┃ ┗ init.go
+ ┣ 2_create
+ ┃ ┗ create.go
+ ┣ 3_read
+ ┃ ┗ read.go
+ ┣ 4_update
+ ┃ ┗ update.go
+ ┗ 5_delete
+ ┃ ┗ delete.go
+```
+Within each separate file, we will run `go mod init <filename>` then `go mod tidy` to initialize their `go.mod` and `go.sum` files, which help to download the dependencies when building our executable.
+
+Note that this set-up is not designed with a project in mind and is simply a learning directory. A multi-directory Go project that is on GitHub should use the go Modules functionality (which works best on version control sites like GitHub).
 
 ## Establishing a connection
+
+We shall work on this in the `1_connect` folder.
 
 First, the `Open` function allows us to establish a connection with our credentials. Our credentials must be that of a superuser with permission to create a new database. In this case, I will use the `postgres` superuser I have set up.
 
@@ -270,6 +294,31 @@ func main() {
 ```
 
 The `db` variable represents our database connection, which the `Open` function sets up. The `Ping` function is an additional test that verifies that the database connection is present.
+
+Enter this folder and run `go mod init init.go` and `go mod tidy`. You can then compile with `go build init.go` or run directly with `go run init.go`.
+
+You should receive success logs at this point. Otherwise, ensure that your credentials like your password, local host, and port are set correctly (check your postgres app).
+
+After checking that you can connect with the database, add a command to create a table within the database, then use the `Exec` method to run that SQL query.
+
+```Go
+...
+	//1st argument returns number of rows affected and last insert row, but we are not using it for now.
+	_, err = db.Exec(create_command)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		log.Println("Table created.")
+	}
+
+```
+
+this completes the `init.go` file. Re-run `init.go` with the new code, and you should receive a 3rd log this time that declares that your table was created. **Crucially**, if you then run `init.go` once again, you will receive the error that your table has been created:
+```
+pq: relation "users" already exists
+```
+
+## Creating (Inserting) Data
 
 
 

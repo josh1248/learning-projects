@@ -30,22 +30,17 @@ func main() {
 		log.Println("Connection to database established.")
 	}
 
-	//"public." prefix ensures that we can publicly see our tables in interfaces like pgAdmin
-	create_command := `
-		CREATE TABLE public.users
-		(
-				username VARCHAR(20) PRIMARY KEY,
-				password TEXT,
-				is_admin BOOLEAN,
-				likes INT
-		);
-	`
+	statement, err := db.Prepare("DROP TABLE users")
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	//1st argument returns number of rows affected and last insert row, but we are not using it for now.
-	_, err = db.Exec(create_command)
+	result, err := statement.Exec()
 	if err != nil {
 		log.Fatal(err)
 	} else {
-		log.Println("Table created.")
+		log.Println(result)
+		log.Println("table dropped.")
 	}
+
 }

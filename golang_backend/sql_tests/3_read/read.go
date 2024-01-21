@@ -30,21 +30,28 @@ func main() {
 		log.Println("Connection to database established.")
 	}
 
-	create_command := `
-		CREATE TABLE users
-		(
-				username VARCHAR(20) PRIMARY KEY,
-				password TEXT,
-				is_admin BOOLEAN,
-				likes INT
-		);
-	`
-
-	//1st argument returns number of rows affected and last insert row, but we are not using it for now.
-	_, err = db.Exec(create_command)
+	//db Query is for data-returning queries like SELECT.
+	rows, err := db.Query("SELECT * FROM users")
+	defer rows.Close()
 	if err != nil {
 		log.Fatal(err)
-	} else {
-		log.Println("Table created.")
+	}
+
+	var username string
+	var password string
+	var admin bool
+	var l int
+
+	for rows.Next() {
+		err := rows.Scan(&username, &password, &admin, &l)
+		if err != nil {
+			log.Fatal(err)
+		}
+		log.Println(username, password, admin, l)
+	}
+
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
 	}
 }
