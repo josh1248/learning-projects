@@ -1,0 +1,1 @@
+Why not get a tutorial into machine learning implementation by having the model play Tic-Tac-Toe, a game whose AI does not need ML at all? :D
