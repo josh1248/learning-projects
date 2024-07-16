@@ -30,29 +30,59 @@ export const TicTacToe = () => {
 
     // true - X. false - O.
     const [turn, setTurn] = useState(true);
+    const [response, setResponse] = useState(['-']);
 
-    const registerTurn = (position: number) => {
+    const opponentTurn = async (grid: number[], turn: boolean) => {
+        console.log(JSON.stringify({
+            size: 3,
+            board_state: grid,
+          }));
+        await fetch("http://localhost:8000/items", {
+            method: "POST",
+            body: JSON.stringify({
+              size: 3,
+              board_state: grid,
+            }),
+            headers: {
+              "Access-Control-Allow-Origin": "*",
+              "Content-type": "application/json",
+            }
+        })
+        .then((response) => {
+            console.log(response);
+            return response.json();
+        })
+        .then((json) => {
+            setResponse(json.toPlay);
+        });
+    }
+
+    const humanTurn = (position: number) => {
         return () => {
             const tmp = gridState;
             tmp[position] = turn ? 'X' : 'O';
             setGridState([...tmp]);
-            setTurn(turn => !turn);
+            // prevent race condition on turn
+            opponentTurn(tmp, turn);
         };
-    }
+    };
     
     return (
         <>
             <h1>teec tac toe</h1>
+            <h2>Turn: {turn ? 'X' : 'O'}</h2>
+            <h2>Computer says: Play at {response}</h2>
             {[...Array(3).keys()].map(row => {
                 return (
-                    <div>
+                    <div key={row}>
                         {[...Array(3).keys()].map(col => {
                             const cellPosition = 3 * row + col;
 
                             return (
-                                <Square 
+                                <Square
+                                    key={cellPosition}
                                     value={gridState[cellPosition]}
-                                    updateGrid={registerTurn(cellPosition)}
+                                    updateGrid={humanTurn(cellPosition)}
                                 />
                             );
                         })}
