@@ -2,11 +2,12 @@ Why not get a tutorial into machine learning implementation by having the model 
 
 # Devlog
 
-## Misc
 
-- If you need to create a virtual environment because there are different python module dependencies between your projects, have a look at Python's virtual environment, or `venv`.
+
 
 ## setting up your venv
+- If you need to create a virtual environment because there are different python module dependencies between your projects, have a look at Python's virtual environment, or `venv`.
+- 
 https://www.youtube.com/watch?v=Y21OR1OPC9A
 
 First-time setup:
@@ -39,3 +40,6 @@ Install dependencies based on someone else's requirements.txt:
 
 - Virtual environment created does not need to be shared and should be quickly generated
 - Virtual environment files, for good practice, should start with `.` to be hidden, and should be ignored in `.gitignore`
+
+## Django setup
+- After installing django in the virtual envir
