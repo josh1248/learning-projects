@@ -41,5 +41,34 @@ Install dependencies based on someone else's requirements.txt:
 - Virtual environment created does not need to be shared and should be quickly generated
 - Virtual environment files, for good practice, should start with `.` to be hidden, and should be ignored in `.gitignore`
 
-## Django setup
-- After installing django in the virtual envir
+## FastAPI setup
+- Installation: `pip install fastapi` (Remember to do this in the virtual environment and then transfer dependencies!)
+- Run the server: `fastapi dev main.py`, or the index python file with all the endpoints
+
+## CORS
+- Need CORS so that frontend and backend, which are from different ports, can talk
+https://fastapi.tiangolo.com/tutorial/cors/
+
+```Python
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# ...
+```
