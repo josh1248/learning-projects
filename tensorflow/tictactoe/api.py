@@ -2,6 +2,7 @@ from fastapi import status, HTTPException, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
+from .agent import select_move
 
 app = FastAPI()
 
@@ -23,7 +24,7 @@ app.add_middleware(
 
 class GameGrid(BaseModel):
     size: int
-    board_state: list[str]
+    board_state: list[int]
 
 @app.get("/")
 def read_root():
@@ -39,4 +40,4 @@ async def next_move(grid: GameGrid):
             detail='board state must reflect tic tac toe square.'
         )
     
-    return {'toPlay': 3}
+    return {'toPlay': select_move(grid.board_state)}

@@ -1,4 +1,9 @@
-Why not get a tutorial into machine learning implementation by having the model play Tic-Tac-Toe, a game whose AI does not need ML at all? :D
+
+
+Procedure now:
+
+create a terminal and change directory to `teec-tac-toe`:
+
 
 # Devlog
 
@@ -43,7 +48,7 @@ Install dependencies based on someone else's requirements.txt:
 
 ## FastAPI setup
 - Installation: `pip install fastapi` (Remember to do this in the virtual environment and then transfer dependencies!)
-- Run the server: `fastapi dev main.py`, or the index python file with all the endpoints
+- Run the server: `fastapi dev api.py`, or the index python file with all the endpoints
 
 ## CORS
 - Need CORS so that frontend and backend, which are from different ports, can talk
