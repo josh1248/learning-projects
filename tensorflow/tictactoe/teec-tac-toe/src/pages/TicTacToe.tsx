@@ -116,8 +116,13 @@ export const TicTacToe = () => {
             tmp[position].value = turn ? 'X' : 'O';
             tmp[position].color = 'gray';
             
+            
             const newGrid = [...gridStates, tmp];
             setGridStates(newGrid);
+            if (tmp.reduce((prev, curr) => (prev + (curr.value === '' ? 0 : 1)), 0) === 9) {
+                setVictoryFeedback('Draw.');
+                return;
+            }
             var won = ColorVictoryIfAny(tmp);
             console.log(won);
             if (won) {
@@ -136,7 +141,7 @@ export const TicTacToe = () => {
             {victoryFeedback === '' && <h2>Turn: {turn ? 'X (Your turn)' : 'O (AI is "thinking"...)'}</h2>}
             <button 
                 style={{borderColor: 'black'}}
-                disabled={gridStates.length === 0}
+                disabled={gridStates.length === 1}
                 onClick={() => {
                     setGridStates([...gridStates.slice(0, gridStates.length - 1)]);
                     setVictoryFeedback('');
