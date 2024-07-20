@@ -2,8 +2,7 @@ from fastapi import status, HTTPException, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel
-from .AI_agent import select_move
-from .minimax_agent import minimax_agent
+from .AI_agent import select_move, train_model
 
 app = FastAPI()
 
@@ -31,15 +30,15 @@ class GameGrid(BaseModel):
 def read_root():
     return {"Hello": "Wddd"}
 
+model = train_model()
 
 @app.post("/items")
 async def next_move(grid: GameGrid):
-    print(grid)
     if len(grid.board_state) != 9:
         raise HTTPException(
             status_code=400,
             detail='board state must reflect tic tac toe square.'
         )
     
-    print(minimax_agent(grid.board_state))
-    return {'toPlay': minimax_agent(grid.board_state)[2]}
+    return {'toPlay': select_move(model, grid)}
+    

@@ -1,3 +1,5 @@
+from .minimax_agent import minimax_agent
+
 def getAllStates():
     states = []
     def helper(curr: list[int], remaining):
@@ -10,9 +12,16 @@ def getAllStates():
             helper(curr, remaining - 1)
             curr.pop()
 
-        
-
     helper([], 9)
-    print(states)
+    return states
 
-getAllStates()
+def generateTrainingData() -> tuple[list, list]:
+    inputs = []
+    outputs = []
+    for state in getAllStates():
+        terminal, value, play = minimax_agent(state)
+        if not terminal:
+            inputs.append(state)
+            outputs.append(play)
+    
+    return inputs, outputs
