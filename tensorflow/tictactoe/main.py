@@ -39,6 +39,6 @@ async def next_move(grid: GameGrid):
             status_code=400,
             detail='board state must reflect tic tac toe square.'
         )
-    
-    return {'toPlay': select_move(model, grid)}
+    prediction = select_move(model, grid.board_state)
+    return {'toPlay': prediction}
     
