@@ -181,7 +181,7 @@ export const TicTacToe = () => {
                 style={{borderColor: 'black'}}
                 disabled={gridStates.length === 1}
                 onClick={() => {
-                    setGridStates([initialGrid]);
+                    setGridStates(grid => grid.slice(0, grid.length - 1).map(cell => ({...cell})));
                     setPlayer(false);
                     clearStates();
                 }}
