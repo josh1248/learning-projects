@@ -1,15 +1,4 @@
 
-
-Procedure now:
-
-create a terminal and change directory to `teec-tac-toe`:
-
-
-# Devlog
-
-
-
-
 ## setting up your venv
 - If you need to create a virtual environment because there are different python module dependencies between your projects, have a look at Python's virtual environment, or `venv`.
 - 

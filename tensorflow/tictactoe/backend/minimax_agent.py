@@ -27,7 +27,7 @@ def board_value(board_state: list[int]) -> tuple[bool, int]:
 
     return(sum([1 if square != 0 else 0 for square in board_state]) == 9, 0)
         
-def minimax_agent(board_state) -> tuple[bool, int, int]:
+def minimax_agent(board_state) -> tuple[bool, int, int, list]:
     '''
         Based on the board state, returns 2 items:
         - First item is a boolean, denoting if the board state is "terminal" - no more moves to be played.
@@ -36,6 +36,7 @@ def minimax_agent(board_state) -> tuple[bool, int, int]:
             - -1 if a 2nd player victory is secured
             - 0 otherwise 
         - Third item returns which empty slot to place in (0 to 8) if board state is non-terminal.
+        - Fourth item returns placement evaluations per square.
         
         Third item value should be ignored if the first value reads False.
     '''
@@ -44,7 +45,7 @@ def minimax_agent(board_state) -> tuple[bool, int, int]:
 
     # ensure that current board still has decisions to make
     if len(empty_squares) == 0 or board_value(board_state)[1] != 0:
-        return (True, board_value(board_state)[1], -1)
+        return (True, board_value(board_state)[1], -1, [0] * 9)
     
     # let moves[0] indicate moves that give board value 0,
     # moves[1] indicate moves that give board value 1,
@@ -53,13 +54,52 @@ def minimax_agent(board_state) -> tuple[bool, int, int]:
     for i in empty_squares:
         curr = board_state[:]
         curr[i] = player
-        _, value, _ = minimax_agent(curr)
+        _, value, _, _ = minimax_agent(curr)
         moves[value].append(i)
 
     # always pick the board state that is optimal for the current player
+    # currently picks the smallest index if there are multiple optimal moves.
+    # for random-ness: use: moves[player][random.randrange(0, len(moves[player]))]
+    # for the first:  min(moves[player])
+    activations = []
     if len(moves[player]) > 0:
-        return (False, player, moves[player][random.randrange(0, len(moves[player]))])
+        for i in range(9):
+            if i in moves[0]:
+                activations.append(0.01)
+            elif i in moves[1]:
+                activations.append(1)
+            else:
+                activations.append(0.00001)
+
+        return  (
+            False, 
+            player, 
+            moves[player][random.randrange(0, len(moves[player]))],
+            [activations]
+        )
     elif len(moves[0]) > 0:
-        return (False, 0, moves[0][random.randrange(0, len(moves[0]))])
+        for i in range(9):
+            if i in moves[0]:
+                activations.append(1)
+            elif i in moves[-player]:
+                activations.append(0.01)
+            else:
+                activations.append(0.00001)
+        return (
+            False,
+            0,
+            moves[0][random.randrange(0, len(moves[0]))],
+            [activations]
+        )
     else:
-        return (False, -player, moves[-player][random.randrange(0, len(moves[-player]))])
+        for i in range(9):
+            if i in moves[-player]:
+                activations.append(0.01)
+            else:
+                activations.append(0.00001)
+        return (
+            False,
+            -player,
+            moves[-player][random.randrange(0, len(moves[-player]))],
+            [activations]
+        )
